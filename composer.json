@@ -1,0 +1,21 @@
+{
+  "name": "olsen/olmath",
+  "description": "a simple math library",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "oLsen",
+      "email": "wayne@o1sen.noip.me"
+    }
+  ],
+  "require": {
+    "php": "^7.0",
+    "phpunit/phpunit": "7.1.5"
+  },
+  "autoload": {
+    "classmap": [
+      "src/Math"
+    ]
+  }
+}
