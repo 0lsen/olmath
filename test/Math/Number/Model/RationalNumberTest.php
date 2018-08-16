@@ -25,6 +25,32 @@ class RationalNumberTest extends TestCase
         }
     }
 
+    //TODO: testConstruct()
+
+    public function testToString()
+    {
+        $number = new RationalNumber(0, 0, 0);
+        $this->assertEquals("0", (string) $number);
+
+        $number = new RationalNumber(1, 3, 1);
+        $this->assertEquals("1/3", (string) $number);
+
+        $number = new RationalNumber(1, 3, -1);
+        $this->assertEquals("- 1/3", (string) $number);
+
+        $number = new RationalNumber(6, 3, 1);
+        $this->assertEquals("2", (string) $number);
+
+        $number = new RationalNumber(6, 3, -1);
+        $this->assertEquals("- 2", (string) $number);
+
+        $number = new RationalNumber(7, 3, 1);
+        $this->assertEquals("2 1/3", (string) $number);
+
+        $number = new RationalNumber(7, 3, -1);
+        $this->assertEquals("- 2 1/3", (string) $number);
+    }
+
     public function testValue()
     {
         foreach ($this->testNumbers as $index => $test) {

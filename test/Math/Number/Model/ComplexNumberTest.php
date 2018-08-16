@@ -1,6 +1,7 @@
 <?php
 
 use Math\Number\Model\ComplexNumber;
+use Math\Number\Model\RationalNumber;
 use PHPUnit\Framework\TestCase;
 
 class ComplexNumberTest extends TestCase
@@ -17,6 +18,38 @@ class ComplexNumberTest extends TestCase
         ['neg - pos', -1.2, 3.4],
         ['neg - neg', -1.2, -3.4],
     ];
+
+    //TODO: testConstruct()
+
+    public function testToString()
+    {
+        $number = new ComplexNumber(0, 0);
+        $this->assertEquals("0", (string) $number);
+
+        $number = new ComplexNumber(1, 0);
+        $this->assertEquals("1", (string) $number);
+
+        $number = new ComplexNumber(0, 1);
+        $this->assertEquals("i", (string) $number);
+
+        $number = new ComplexNumber(1, 1);
+        $this->assertEquals("1 + i", (string) $number);
+
+        $number = new ComplexNumber(1, -1);
+        $this->assertEquals("1 - i", (string) $number);
+
+        $number = new ComplexNumber(1.3, 1.3);
+        $this->assertEquals("1.3 + 1.3 i", (string) $number);
+
+        $number = new ComplexNumber(-1.3, -1.3);
+        $this->assertEquals("-1.3 -1.3 i", (string) $number);
+
+        $number = new ComplexNumber(new RationalNumber(4,3,1), new RationalNumber(4, 3, 1));
+        $this->assertEquals("1 1/3 + 1 1/3 i", (string) $number);
+
+        $number = new ComplexNumber(new RationalNumber(4,3,-1), new RationalNumber(4, 3, -1));
+        $this->assertEquals("- 1 1/3 - 1 1/3 i", (string) $number);
+    }
 
     public function testValue()
     {

@@ -56,11 +56,22 @@ class ComplexNumber extends AbstractNumber
 
     public function __toString()
     {
-        $string = (string) $this->r;
+        $r = (string) $this->r;
         $i = (string) $this->i;
+
+        if (!$r && !$i) return "0";
+
+        $string = "";
+        if ($r) $string .= $r;
+        if ($r && $i) $string .= " ";
+        if ($r && $i && substr($i, 0, 1) != "-") $string .= "+ ";
         if ($i) {
-            $string .= (substr($i, 0, 1) == '-' ? "" : "+") . ($i == 1 ? "" : $i) . "i";
+            if ($this->i->absoluteValue() != 1) $string .= $i." ";
+            elseif ($this->i->value() < 0) $string .= "- ";
+            $string .= "i";
         }
+
+
         return $string;
     }
 

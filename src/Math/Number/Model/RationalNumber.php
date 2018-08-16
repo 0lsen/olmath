@@ -63,17 +63,17 @@ class RationalNumber extends AbstractNumber implements ComparableNumber
 
     public function __toString()
     {
-        if (!$this->s) {
-            return "0";
-        }
+        if (!$this->s) return "0";
+
+        $int = floor($this->n / $this->d);
+        $mod = $this->n % $this->d;
+
         $string = "";
-        if ($this->s < 0) {
-            $string .= "-";
-        }
-        $string .= $this->n;
-        if ($this->d > 1) {
-            $string .= "/".$this->d;
-        }
+        if ($this->s < 0) $string .= "- ";
+        if ($int) $string .= $int;
+        if ($int && $mod) $string .= " ";
+        if ($mod) $string .= $mod."/".$this->d;
+
         return $string;
     }
 
