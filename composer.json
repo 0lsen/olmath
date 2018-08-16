@@ -1,6 +1,7 @@
 {
   "name": "olsen/olmath",
   "description": "a simple math library",
+  "version": "0.0.1",
   "minimum-stability": "stable",
   "license": "proprietary",
   "authors": [
@@ -10,7 +11,9 @@
     }
   ],
   "require": {
-    "php": "^7.0",
+    "php": "^7.0"
+  },
+  "require-dev": {
     "phpunit/phpunit": "7.1.5"
   },
   "autoload": {
