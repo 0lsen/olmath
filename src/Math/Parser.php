@@ -9,6 +9,7 @@ abstract class Parser
 {
     private static $operators = '\+\-\/*';
     private static $operatorsToReplace = ',\\xe3\\x97\\xe3\\xb7';
+    private static $validSymbols;
 
     private static $regexNumber = '((?:(?<![)0-9i])-)?(?:(?:[0-9]+)?\.)?(?:[0-9]+)?i?)';
     private static $regexFormula;
@@ -20,6 +21,7 @@ abstract class Parser
     static function init()
     {
         self::$regexFormula = '^({\d+})(['. self::$operators .']({\d+}))*$';
+        self::$validSymbols = '\(\)0-9i\.' . self::$operators . self::$operatorsToReplace;
     }
 
     /**
@@ -29,7 +31,7 @@ abstract class Parser
     static function evaluate($string)
     {
         $results = [];
-        if (preg_match_all('#[ 0-9i\.' . self::$operators . self::$operatorsToReplace . '\(\)]+#', $string, $matches)) {
+        if (preg_match_all('#['.self::$validSymbols.'][ '.self::$validSymbols.']+['.self::$validSymbols.']#', $string, $matches)) {
             foreach ($matches[0] as $match) {
                 self::$numbers = [];
                 $originalMatch = $match;
