@@ -32,12 +32,12 @@ abstract class Parser
         if (preg_match_all('#[ 0-9i\.' . self::$operators . self::$operatorsToReplace . '\(\)]+#', $string, $matches)) {
             foreach ($matches[0] as $match) {
                 self::$numbers = [];
+                $originalMatch = $match;
                 $match = preg_replace(
                     array('#\s+#', '#,#', '#\\xe3\\x97#', '#\\xe3\\xb7#'),
                     array('', '.', '*', '/'),
                     $match
                 );
-                $originalMatch = $match;
                 self::parseNumbers($match);
                 if (preg_match('#^[\(]*\{1\}[\)]*$#', $match)) {
                     continue;
