@@ -1,8 +1,7 @@
 <?php
 
+use Math\Parser;
 use PHPUnit\Framework\TestCase;
-
-use \Math\Parser;
 
 class ParserTest extends TestCase
 {
@@ -99,19 +98,19 @@ class ParserTest extends TestCase
 
     function testRationalNumbers()
     {
-        $string = '2/3 + 1/6';
+        $string = '5/3 + 1/6';
         $results = Parser::evaluate($string);
-        $this->assertEquals('5/6', (string) $results[0]->result);
+        $this->assertEquals('1 5/6', (string) $results[0]->result);
     }
 
     function testComplexNumbers()
     {
         $string = '1+2i';
         $results = Parser::evaluate($string);
-        $this->assertEquals('1+2i', (string) $results[0]->result);
+        $this->assertEquals('1 + 2 i', (string) $results[0]->result);
 
         $string = '(1+2i)*i';
         $results = Parser::evaluate($string);
-        $this->assertEquals('-2+i', (string) $results[0]->result);
+        $this->assertEquals('- 2 + i', (string) $results[0]->result);
     }
 }
