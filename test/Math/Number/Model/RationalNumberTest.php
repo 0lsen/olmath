@@ -1,6 +1,8 @@
 <?php
 
+use Math\Number\Model\ComplexNumber;
 use Math\Number\Model\RationalNumber;
+use Math\Number\Model\RealNumber;
 use PHPUnit\Framework\TestCase;
 
 class RationalNumberTest extends TestCase
@@ -67,7 +69,61 @@ class RationalNumberTest extends TestCase
         }
     }
 
-    //TODO: testEquals(), testCompare()
+    public function testZeroEquals()
+    {
+        $number1 = new RationalNumber(0);
+        $number2 = new RationalNumber(1, 2, 0);
+        $this->assertTrue($number1->equals($number2));
+        $this->assertTrue($number2->equals($number1));
+
+        $number1 = new RationalNumber(0);
+        $number2 = new RealNumber(0);
+        $this->assertTrue($number1->equals($number2));
+        $this->assertTrue($number2->equals($number1));
+
+        $number1 = new RationalNumber(0);
+        $number2 = new ComplexNumber(0, new RationalNumber(0));
+        $this->assertTrue($number1->equals($number2));
+        $this->assertTrue($number2->equals($number1));
+    }
+
+    public function testEquals()
+    {
+        $number1 = new RationalNumber(1, 5, -1);
+        $number2 = new RationalNumber(1, 5, -1);
+        $this->assertTrue($number1->equals($number2));
+        $this->assertTrue($number2->equals($number1));
+
+        $number1 = new RationalNumber(1, 5, -1);
+        $number2 = new RealNumber(-0.2);
+        $this->assertTrue($number1->equals($number2));
+        $this->assertTrue($number2->equals($number1));
+
+        $number1 = new RationalNumber(1, 5, -1);
+        $number2 = new ComplexNumber(-0.2, 0);
+        $this->assertTrue($number1->equals($number2));
+        $this->assertTrue($number2->equals($number1));
+    }
+
+    public function testNotEquals()
+    {
+        $number1 = new RationalNumber(1, 3, 1);
+        $number2 = new RationalNumber(2, 5, 1);
+        $this->assertFalse($number1->equals($number2));
+        $this->assertFalse($number2->equals($number1));
+
+        $number1 = new RationalNumber(1, 3, 1);
+        $number2 = new RealNumber(0.33333);
+        $this->assertFalse($number1->equals($number2));
+        $this->assertFalse($number2->equals($number1));
+
+        $number1 = new RationalNumber(1, 5, -1);
+        $number2 = new ComplexNumber(-0.2, 1);
+        $this->assertFalse($number1->equals($number2));
+        $this->assertFalse($number2->equals($number1));
+    }
+
+    //TODO: testCompare()
 
     public function testNegative()
     {
