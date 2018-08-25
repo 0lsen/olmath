@@ -116,6 +116,9 @@ class RationalNumber extends AbstractNumber implements ComparableNumber
                     && $this->d == $number->d
                     && $this->s == $number->s;
             }
+        } elseif ($number instanceof Number) {
+            $value = $number->value();
+            return is_numeric($value) && $this->value() == $value;
         } else {
             throw new UnknownOperandException();
         }

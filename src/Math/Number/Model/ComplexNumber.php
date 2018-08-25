@@ -30,21 +30,25 @@ class ComplexNumber extends AbstractNumber
      */
     public function __construct($r, $i=0)
     {
-        if (is_numeric($r) && is_numeric($i)) {
-            $this->r = (int)$r == $r
-                ? new RationalNumber(abs($r), 1, $r <=> 0)
-                : new RealNumber($r);
-            $this->i = (int)$i == $i
-                ? new RationalNumber(abs($i), 1, $i <=> 0)
-                : new RealNumber($i);
-        } elseif ($r instanceof ComplexNumber) {
+        if ($r instanceof ComplexNumber) {
             $this->r = clone $r->r;
             $this->i = clone $r->i;
-        } elseif ($r instanceof Number && $i instanceof Number) {
-            $this->r = $r;
-            $this->i = $i;
         } else {
-            throw new UnknownOperandException(get_class($r));
+            $this->setComponent($this->r, $r);
+            $this->setComponent($this->i, $i);
+        }
+    }
+
+    private function setComponent(&$component, $number)
+    {
+        if (is_numeric($number)) {
+            $component = (int)$number == $number
+                ? new RationalNumber(abs($number), 1, $number <=> 0)
+                : new RealNumber($number);
+        } elseif ($number instanceof Number) {
+            $component = $number;
+        } else {
+            throw new UnknownOperandException('Incompatible Class ' . get_class($number));
         }
     }
 
@@ -75,9 +79,9 @@ class ComplexNumber extends AbstractNumber
         return $string;
     }
 
-    public function value() : ComplexNumber
+    public function value()
     {
-        return $this;
+        return $this->i->equals(new RationalNumber(0)) ? $this->r->value() : $this;
     }
 
     public function absoluteValue()
@@ -87,10 +91,10 @@ class ComplexNumber extends AbstractNumber
 
     public function equals(Number $number)
     {
-        if ($number instanceof RealNumber) {
-            return $this->r->equals($number) && $this->i->equals(new RealNumber(0));
-        } elseif ($number instanceof ComplexNumber) {
+        if ($number instanceof ComplexNumber) {
             return $this->r->equals($number->r) && $this->i->equals($number->i);
+        } elseif ($number instanceof Number) {
+            return $this->r->equals($number) && $this->i->equals(new RealNumber(0));
         } else {
             throw new UnknownOperandException(get_class($number));
         }
