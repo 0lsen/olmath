@@ -123,7 +123,19 @@ class RationalNumberTest extends TestCase
         $this->assertFalse($number2->equals($number1));
     }
 
-    //TODO: testCompare()
+    public function testCompare()
+    {
+        foreach ($this->testNumbers as $index1 => $test1) {
+            $number1 = new RationalNumber($test1[1], $test1[2], $test1[0]);
+            foreach ($this->testNumbers as $index2 => $test2) {
+                $number2 = new RationalNumber($test2[1], $test2[2], $test2[0]);
+                $this->assertEquals(
+                    $this->numberValue($test1) <=> $this->numberValue($test2),
+                    $number1->compareTo($number2)
+                );
+            }
+        }
+    }
 
     public function testNegative()
     {

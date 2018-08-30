@@ -124,7 +124,7 @@ class RationalNumber extends AbstractNumber implements ComparableNumber
         }
     }
 
-    public function compareTo(Number $number)
+    public function compareTo(ComparableNumber $number)
     {
         return $this->value() <=> $number->value();
     }
