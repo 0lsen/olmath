@@ -16,6 +16,8 @@ use Math\Number\Exception\UnknownOperandException;
  */
 interface Number
 {
+    public function __toString();
+
     public function value();
 
     /**
