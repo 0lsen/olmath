@@ -75,7 +75,24 @@ class RealNumberTest extends TestCase
         $this->assertFalse($n3->equals($n1));
     }
 
-    //TODO: testCompare()
+    public function testCompare()
+    {
+        $expectedValues = [
+            [0, -1, 1, 1, 1],
+            [1, 0, 1, 1, 1],
+            [-1, -1, 0, 1, -1],
+            [-1, -1, -1, 0, -1],
+            [-1, -1, 1, 1, 0],
+        ];
+
+        foreach ($this->testNumbers as $index1 => $test1) {
+            $number1 = new RealNumber($test1[1]);
+            foreach ($this->testNumbers as $index2 => $test2) {
+                $number2 = new RealNumber($test2[1]);
+                $this->assertEquals($expectedValues[$index1][$index2], $number1->compareTo($number2));
+            }
+        }
+    }
 
     public function testNegative()
     {

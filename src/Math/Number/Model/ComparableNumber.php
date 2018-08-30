@@ -2,11 +2,11 @@
 
 namespace Math\Number\Model;
 
-interface ComparableNumber
+interface ComparableNumber extends Number
 {
     /**
      * @param Number $number
      * @return integer
      */
-    public function compareTo(Number $number);
+    public function compareTo(ComparableNumber $number);
 }
