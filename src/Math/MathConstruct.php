@@ -1,24 +1,16 @@
 <?php
 
-namespace Math\Number\Model;
+namespace Math;
 
-use Math\Number\Exception\UnknownOperatorException;
 
-/**
- * Class AbstractNumber
- * @method Number add_(Number $number)
- * @method Number subtract_(Number $number)
- * @method Number multiplyWith_(Number $number)
- * @method Number divideBy_(Number $number)
- * @method Number negative_()
- * @method Number square_()
- */
-abstract class AbstractNumber implements Number
+use Math\Exception\UnknownOperatorException;
+
+abstract class MathConstruct
 {
     /**
      * @param $name
      * @param $arguments
-     * @return Number
+     * @return MathInterface
      * @throws UnknownOperatorException
      */
     public function __call($name, $arguments)

@@ -1,10 +1,11 @@
 <?php
 
-namespace Math\Number\Model;
+namespace Math\Model\Number;
 
-use Math\Number\Exception\DivisionByZeroException;
-use Math\Number\Exception\UnknownOperandException;
-use Math\Number\Functions\Denominator;
+use Math\Exception\DivisionByZeroException;
+use Math\Exception\UnknownOperandException;
+use Math\Functions\CalcUtil;
+use Math\Functions\Denominator;
 
 /**
  * Class RationalNumber
@@ -12,14 +13,16 @@ use Math\Number\Functions\Denominator;
  */
 class RationalNumber extends AbstractNumber implements ComparableNumber
 {
+    public static $decimalThreshold = 8;
+
     /** sign @var integer */
-    public $s;
+    private $s;
 
     /** numerator @var integer */
-    public $n;
+    private $n;
 
     /** denominator @var integer */
-    public $d;
+    private $d;
 
     /**
      * RationalNumber constructor.
@@ -207,6 +210,36 @@ class RationalNumber extends AbstractNumber implements ComparableNumber
         return $this;
     }
 
+    public function squareRoot()
+    {
+        return $this->root(2);
+    }
+
+    public function root($nth)
+    {
+        if ($this->s) {
+            $n = CalcUtil::nthRoot($this->n, $nth);
+            $d = CalcUtil::nthRoot($this->d, $nth);
+            if ($this->canBeCastToInt($n) && $this->canBeCastToInt($d)) {
+                $this->n = round($n, 0);
+                $this->d = round($d, 0);
+                return $this;
+            } else {
+                return new RealNumber($n/$d);
+            }
+        }
+        return $this;
+    }
+
+    private function canBeCastToInt($number) {
+        return round($number, self::$decimalThreshold) == round($number, 0);
+    }
+
+    public function normSquared()
+    {
+        return $this->square_();
+    }
+
     /**
      * @return $this
      * @throws DivisionByZeroException
@@ -220,5 +253,29 @@ class RationalNumber extends AbstractNumber implements ComparableNumber
         } else {
             throw new DivisionByZeroException();
         }
+    }
+
+    /**
+     * @return int
+     */
+    public function getS(): int
+    {
+        return $this->s;
+    }
+
+    /**
+     * @return int
+     */
+    public function getN(): int
+    {
+        return $this->n;
+    }
+
+    /**
+     * @return int
+     */
+    public function getD(): int
+    {
+        return $this->d;
     }
 }

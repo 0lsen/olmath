@@ -1,25 +1,17 @@
 <?php
 
-namespace Math\Number\Model;
+namespace Math\Model\Number;
 
-use Math\Number\Exception\DivisionByZeroException;
-use Math\Number\Exception\UnknownOperandException;
+use Math\Exception\DivisionByZeroException;
+use Math\Exception\UnknownOperandException;
 
-/**
- * Class ComplexNumber
- * @method ComplexNumber add_(Number $number)
- * @method ComplexNumber subtract_(Number $number)
- * @method ComplexNumber multiplyWith_(Number $number)
- * @method ComplexNumber divideBy_(Number $number)
- * @method ComplexNumber negative_()
- */
 class ComplexNumber extends AbstractNumber
 {
-    /** @var RealNumber|RationalNumber */
-    public $r;
+    /** @var ComparableNumber */
+    private $r;
 
-    /** @var RealNumber|RationalNumber */
-    public $i;
+    /** @var ComparableNumber */
+    private $i;
 
     /**
      * ComplexNumber constructor.
@@ -162,5 +154,26 @@ class ComplexNumber extends AbstractNumber
     public function square() {
         $this->multiplyWith($this);
         return $this;
+    }
+
+    public function normSquared()
+    {
+        return $this->r->square_()->add($this->i->square_());
+    }
+
+    /**
+     * @return ComparableNumber
+     */
+    public function getR(): ComparableNumber
+    {
+        return $this->r;
+    }
+
+    /**
+     * @return ComparableNumber
+     */
+    public function getI(): ComparableNumber
+    {
+        return $this->i;
     }
 }

@@ -1,20 +1,12 @@
 <?php
 
-namespace Math\Number\Model;
+namespace Math\Model\Number;
 
-use Math\Number\Exception\DivisionByZeroException;
-use Math\Number\Exception\UnknownOperandException;
+use Math\Exception\DivisionByZeroException;
+use Math\Exception\UnknownOperandException;
+use Math\MathInterface;
 
-/**
- * Class Number
- * @method Number add_(Number $number)
- * @method Number subtract_(Number $number)
- * @method Number multiplyWith_(Number $number)
- * @method Number divideBy_(Number $number)
- * @method Number negative_()
- * @method Number square_()
- */
-interface Number
+interface Number extends MathInterface
 {
     public function __toString();
 
@@ -70,4 +62,9 @@ interface Number
      * @return Number
      */
     public function square();
+
+    /**
+     * @return ComparableNumber
+     */
+    public function normSquared();
 }

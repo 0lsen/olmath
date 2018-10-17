@@ -1,6 +1,6 @@
 <?php
 
-use Math\Number\Model\RealNumber;
+use Math\Model\Number\RealNumber;
 use PHPUnit\Framework\TestCase;
 
 class RealNumberTest extends TestCase
@@ -256,7 +256,7 @@ class RealNumberTest extends TestCase
                     try {
                         $dividend->divideBy_($divisor);
                     } catch (Throwable $t) {
-                        $this->assertEquals("Math\Number\Exception\DivisionByZeroException", get_class($t));
+                        $this->assertEquals("Math\Exception\DivisionByZeroException", get_class($t));
                     }
                 } else {
                     $this->assertEquals($expectedValues[$index1][$index2], $dividend->divideBy_($divisor)->value());

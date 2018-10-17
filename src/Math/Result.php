@@ -2,23 +2,47 @@
 
 namespace Math;
 
-use Math\Number\Model\Number;
+use Math\Model\Number\Number;
 
 class Result
 {
     /** @var string */
-    public $original;
+    private $original;
 
     /** @var Number */
-    public $result;
+    private $result;
 
     /** @var bool */
-    public $dbz;
+    private $dbz;
 
     function __construct($original, $result, $dbz = false)
     {
         $this->original = $original;
         $this->result = $result;
         $this->dbz = $dbz;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOriginal(): string
+    {
+        return $this->original;
+    }
+
+    /**
+     * @return Number
+     */
+    public function getResult(): Number
+    {
+        return $this->result;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDbz(): bool
+    {
+        return $this->dbz;
     }
 }

@@ -1,14 +1,15 @@
 <?php
 
-namespace Math\Number\Model;
+namespace Math\Model\Number;
 
-use Math\Number\Exception\DivisionByZeroException;
-use Math\Number\Exception\UnknownOperandException;
+use Math\Exception\DivisionByZeroException;
+use Math\Exception\UnknownOperandException;
+use Math\Functions\CalcUtil;
 
 class RealNumber extends AbstractNumber implements ComparableNumber
 {
     /** @var double|float|int */
-    public $r;
+    private $r;
 
     /**
      * RealNumber constructor.
@@ -104,9 +105,32 @@ class RealNumber extends AbstractNumber implements ComparableNumber
         }
     }
 
-    public function square()
-    {
+    public function square() {
         $this->multiplyWith($this);
         return $this;
+    }
+
+    public function squareRoot()
+    {
+        return $this->root(2);
+    }
+
+    public function root($nth)
+    {
+        $this->r = CalcUtil::nthRoot($this->r, $nth);
+        return $this;
+    }
+
+    public function normSquared()
+    {
+        return $this->square_();
+    }
+
+    /**
+     * @return float|int
+     */
+    public function getR()
+    {
+        return $this->r;
     }
 }

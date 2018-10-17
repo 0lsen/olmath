@@ -2,8 +2,8 @@
 
 namespace Math;
 
-use Math\Number\Exception\DivisionByZeroException;
-use Math\Number\Model\ComplexNumber;
+use Math\Exception\DivisionByZeroException;
+use Math\Model\Number\ComplexNumber;
 
 abstract class Parser
 {
@@ -101,7 +101,8 @@ abstract class Parser
         if (!preg_match('#'.self::$regexFormula.'#', $formula)) {
             return false;
         }
-        while(self::resolveOperators($formula, '*/'));
+        while(self::resolveOperators($formula, '/'));
+        while(self::resolveOperators($formula, '*'));
         while(self::resolveOperators($formula, '+\-'));
         return true;
     }

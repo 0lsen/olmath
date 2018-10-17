@@ -1,10 +1,10 @@
 <?php
 
-namespace Math\Number\Exception;
+namespace Math\Exception;
 
 use Throwable;
 
-class DivisionByZeroException extends \Exception
+class UnknownOperandException extends \Exception
 {
     public function __construct($message = "", $code = 0, Throwable $previous = null)
     {

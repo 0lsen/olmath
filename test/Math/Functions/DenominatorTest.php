@@ -1,6 +1,6 @@
 <?php
 
-use Math\Number\Functions\Denominator;
+use Math\Functions\Denominator;
 use PHPUnit\Framework\TestCase;
 
 class DenominatorTest extends TestCase

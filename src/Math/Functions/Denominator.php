@@ -1,6 +1,6 @@
 <?php
 
-namespace Math\Number\Functions;
+namespace Math\Functions;
 
 class Denominator
 {

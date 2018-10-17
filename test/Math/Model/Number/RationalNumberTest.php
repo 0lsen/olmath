@@ -1,8 +1,8 @@
 <?php
 
-use Math\Number\Model\ComplexNumber;
-use Math\Number\Model\RationalNumber;
-use Math\Number\Model\RealNumber;
+use Math\Model\Number\ComplexNumber;
+use Math\Model\Number\RationalNumber;
+use Math\Model\Number\RealNumber;
 use PHPUnit\Framework\TestCase;
 
 class RationalNumberTest extends TestCase
@@ -183,13 +183,13 @@ class RationalNumberTest extends TestCase
         try {
             (new RationalNumber(0))->reciprocal();
         } catch (\Throwable $t) {
-            $this->assertEquals("Math\Number\Exception\DivisionByZeroException", get_class($t));
+            $this->assertEquals("Math\Exception\DivisionByZeroException", get_class($t));
         }
 
         try {
             (new RationalNumber(1, 0))->reciprocal();
         } catch (\Throwable $t) {
-            $this->assertEquals("Math\Number\Exception\DivisionByZeroException", get_class($t));
+            $this->assertEquals("Math\Exception\DivisionByZeroException", get_class($t));
         }
     }
 }

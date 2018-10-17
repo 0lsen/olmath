@@ -1,8 +1,8 @@
 <?php
 
-use Math\Number\Model\ComplexNumber;
-use Math\Number\Model\RationalNumber;
-use Math\Number\Model\RealNumber;
+use Math\Model\Number\ComplexNumber;
+use Math\Model\Number\RationalNumber;
+use Math\Model\Number\RealNumber;
 use PHPUnit\Framework\TestCase;
 
 class ComplexNumberTest extends TestCase
@@ -59,8 +59,8 @@ class ComplexNumberTest extends TestCase
             if (!$test[2]) {
                 $this->assertEquals($this->testNumbers[$index][1], $number->value());
             } else {
-                $this->assertEquals($this->testNumbers[$index][1], $number->value()->r->value());
-                $this->assertEquals($this->testNumbers[$index][2], $number->value()->i->value());
+                $this->assertEquals($this->testNumbers[$index][1], $number->value()->getR()->value());
+                $this->assertEquals($this->testNumbers[$index][2], $number->value()->getI()->value());
             }
         }
     }
@@ -149,8 +149,8 @@ class ComplexNumberTest extends TestCase
         foreach ($this->testNumbers as $index => $test) {
             $number = new ComplexNumber($test[1], $test[2]);
             $number->negative();
-            $this->assertEquals($expectedValues[$index][1], $number->r->value());
-            $this->assertEquals($expectedValues[$index][2], $number->i->value());
+            $this->assertEquals($expectedValues[$index][1], $number->getR()->value());
+            $this->assertEquals($expectedValues[$index][2], $number->getI()->value());
         }
     }
 
@@ -160,9 +160,10 @@ class ComplexNumberTest extends TestCase
             $summand1 = new ComplexNumber($test1[1], $test1[2]);
             foreach ($this->testNumbers as $index2 => $test2) {
                 $summand2 = new ComplexNumber($test2[1], $test2[2]);
+                /** @var ComplexNumber $sum */
                 $sum = $summand1->add_($summand2);
-                $this->assertEquals($test1[1]+$test2[1], $sum->r->value());
-                $this->assertEquals($test1[2]+$test2[2], $sum->i->value());
+                $this->assertEquals($test1[1]+$test2[1], $sum->getR()->value());
+                $this->assertEquals($test1[2]+$test2[2], $sum->getI()->value());
             }
         }
     }
@@ -176,9 +177,10 @@ class ComplexNumberTest extends TestCase
             $factor1 = new ComplexNumber($test1[1], $test1[2]);
             foreach ($this->testNumbers as $index2 => $test2) {
                 $factor2 = new ComplexNumber($test2[1], $test2[2]);
+                /** @var ComplexNumber $product */
                 $product = $factor1->multiplyWith_($factor2);
-                $this->assertEquals($multiplyR($test1[1], $test1[2], $test2[1], $test2[2]), $product->r->value());
-                $this->assertEquals($multiplyI($test1[1], $test1[2], $test2[1], $test2[2]), $product->i->value());
+                $this->assertEquals($multiplyR($test1[1], $test1[2], $test2[1], $test2[2]), $product->getR()->value());
+                $this->assertEquals($multiplyI($test1[1], $test1[2], $test2[1], $test2[2]), $product->getI()->value());
             }
         }
     }
@@ -196,12 +198,13 @@ class ComplexNumberTest extends TestCase
                     try {
                         $dividend->divideBy_($divisor);
                     } catch (Throwable $t) {
-                        $this->assertEquals("Math\Number\Exception\DivisionByZeroException", get_class($t));
+                        $this->assertEquals("Math\Exception\DivisionByZeroException", get_class($t));
                     }
                 } else {
+                    /** @var ComplexNumber $quotient */
                     $quotient = $dividend->divideBy_($divisor);
-                    $this->assertEquals($divideR($test1[1], $test1[2], $test2[1], $test2[2]), $quotient->r->value());
-                    $this->assertEquals($divideI($test1[1], $test1[2], $test2[1], $test2[2]), $quotient->i->value());
+                    $this->assertEquals($divideR($test1[1], $test1[2], $test2[1], $test2[2]), $quotient->getR()->value());
+                    $this->assertEquals($divideI($test1[1], $test1[2], $test2[1], $test2[2]), $quotient->getI()->value());
                 }
 
             }

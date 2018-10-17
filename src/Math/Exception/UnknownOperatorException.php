@@ -1,6 +1,6 @@
 <?php
 
-namespace Math\Number\Exception;
+namespace Math\Exception;
 
 use Throwable;
 
