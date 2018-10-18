@@ -5,7 +5,7 @@ namespace Math\Model\Number;
 use Math\MathConstruct;
 
 /**
- * Interface Number
+ * Class AbstractNumber
  * @method \Math\Model\Number\Number add_(\Math\Model\Number\Number $number)
  * @method \Math\Model\Number\Number subtract_(\Math\Model\Number\Number $number)
  * @method \Math\Model\Number\Number multiplyWith_(\Math\Model\Number\Number $number)

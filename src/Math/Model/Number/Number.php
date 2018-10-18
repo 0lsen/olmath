@@ -6,6 +6,15 @@ use Math\Exception\DivisionByZeroException;
 use Math\Exception\UnknownOperandException;
 use Math\MathInterface;
 
+/**
+ * Interface Number
+ * @method \Math\Model\Number\Number add_(\Math\Model\Number\Number $number)
+ * @method \Math\Model\Number\Number subtract_(\Math\Model\Number\Number $number)
+ * @method \Math\Model\Number\Number multiplyWith_(\Math\Model\Number\Number $number)
+ * @method \Math\Model\Number\Number divideBy_(\Math\Model\Number\Number $number)
+ * @method \Math\Model\Number\Number negative_()
+ * @method \Math\Model\Number\Number square_()
+ */
 interface Number extends MathInterface
 {
     public function __toString();

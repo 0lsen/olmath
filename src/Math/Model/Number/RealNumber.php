@@ -69,6 +69,8 @@ class RealNumber extends AbstractNumber implements ComparableNumber
         if (is_numeric($value)) {
             $this->r += $value;
             return $this;
+        } elseif ($value instanceof ComplexNumber) {
+            return $value->add($this);
         } else {
             throw new UnknownOperandException(get_class($value));
         }
@@ -86,6 +88,8 @@ class RealNumber extends AbstractNumber implements ComparableNumber
         if (is_numeric($value)) {
             $this->r *= $value;
             return $this;
+        } elseif ($value instanceof ComplexNumber) {
+            return $value->multiplyWith_($this);
         } else {
             throw new UnknownOperandException(get_class($value));
         }

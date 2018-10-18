@@ -2,15 +2,12 @@
 
 namespace Math\Model\Vector;
 
-use Math\Exception\DimensionException;
+use Math\Exception\UnknownOperandException;
 use Math\Model\Number\Number;
-use Math\Model\Number\RationalNumber;
+use Math\Model\Number\Zero;
 
 class Vector extends AbstractVector
 {
-    /** @var Number[] */
-    private $entries = [];
-
     public function __construct(...$entries)
     {
         foreach ($entries as $entry) {
@@ -19,38 +16,39 @@ class Vector extends AbstractVector
         $this->dim = sizeof($this->entries);
     }
 
-    public function norm()
-    {
-        $sum = new RationalNumber(0);
-        foreach ($this->entries as $entry) {
-            $sum = $sum->add($entry->normSquared());
-        }
-
-        return $sum->squareRoot();
-    }
-
-    public function scalarMultiplyWith(Number $number)
-    {
-        foreach ($this->entries as $entry) {
-            $entry->multiplyWith($number);
-        }
-
-        return $this;
-    }
-
     public function addVector(VectorInterface $vector)
     {
-        if ($this->dim != $vector->getDim()) {
-            throw new DimensionException('vector dimensions don\'t fit');
-        }
+        parent::addVector($vector);
         foreach ($this->entries as $index => &$entry) {
-            $entry = $entry->add($vector->get($index));
+            $entry = $entry->add($vector->get_($index));
         }
         return $this;
     }
 
-    public function get(int $i)
+    public function appendNumber(Number $number)
     {
-        return $this->entries[$i];
+        $this->dim++;
+        $this->entries[] = $number;
+        return $this;
+    }
+
+    public function appendVector(VectorInterface $vector)
+    {
+        if ($vector instanceof Vector) {
+            for ($i = 0; $i < $vector->getDim(); $i++) {
+                $this->entries[] = $vector->get_($i);
+            }
+        } elseif ($vector instanceof SparseVector) {
+            $indices = $vector->getIndices();
+            for ($i = 0; $i < $vector->getDim(); $i++) {
+                $this->entries[] = in_array($i, $indices)
+                    ? $vector->get_($i)
+                    : Zero::getInstance();
+            }
+        } else {
+            throw new UnknownOperandException(get_class($vector));
+        }
+        $this->dim += $vector->getDim();
+        return $this;
     }
 }

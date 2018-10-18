@@ -73,7 +73,7 @@ class ComplexNumber extends AbstractNumber
 
     public function value()
     {
-        return $this->i->equals(new RationalNumber(0)) ? $this->r->value() : $this;
+        return $this->i->equals(Zero::getInstance()) ? $this->r->value() : $this;
     }
 
     public function absoluteValue()
@@ -86,7 +86,7 @@ class ComplexNumber extends AbstractNumber
         if ($number instanceof ComplexNumber) {
             return $this->r->equals($number->r) && $this->i->equals($number->i);
         } elseif ($number instanceof Number) {
-            return $this->r->equals($number) && $this->i->equals(new RealNumber(0));
+            return $this->r->equals($number) && $this->i->equals(Zero::getInstance());
         } else {
             throw new UnknownOperandException(get_class($number));
         }
@@ -102,11 +102,11 @@ class ComplexNumber extends AbstractNumber
     public function add(Number $number)
     {
         if ($number instanceof RealNumber) {
-            $this->r->add($number);
+            $this->r = $this->r->add($number);
         } elseif ($number instanceof ComplexNumber) {
             $this->r = $this->r->add_($number->r);
             $this->i = $this->i->add_($number->i);
-        } else {
+        } elseif (!$number instanceof Zero) {
             throw new UnknownOperandException(get_class($number));
         }
         return $this;
@@ -121,13 +121,17 @@ class ComplexNumber extends AbstractNumber
     public function multiplyWith(Number $number)
     {
         if ($number instanceof RealNumber) {
-            $this->r->multiplyWith_($number);
-            $this->i->multiplyWith_($number);
+            $this->r = $this->r->multiplyWith($number);
+            $this->i = $this->i->multiplyWith($number);
+        } elseif ($number instanceof RationalNumber) {
+            $this->r = $this->r->multiplyWith($number);
+            $this->i = $this->i->multiplyWith($number);
         } elseif ($number instanceof ComplexNumber) {
             $rOld = clone $this->r;
-
             $this->r = $this->r->multiplyWith($number->r)->subtract($this->i->multiplyWith_($number->i));
             $this->i = $rOld->multiplyWith($number->i)->add($this->i->multiplyWith($number->r));
+        } elseif ($number instanceof Zero) {
+            return Zero::getInstance();
         } else {
             throw new UnknownOperandException(get_class($number));
         }
@@ -143,8 +147,8 @@ class ComplexNumber extends AbstractNumber
             $this->r = $this->r->multiplyWith($number->r)->add($this->i->multiplyWith_($number->i))->divideBy($dividend);
             $this->i = $number->r->multiplyWith($this->i)->subtract($rOld->multiplyWith($number->i))->divideBy($dividend);
         } elseif ($number instanceof Number) {
-            $this->r->divideBy($number);
-            $this->i->divideBy($number);
+            $this->r = $this->r->divideBy($number);
+            $this->i = $this->i->divideBy($number);
         } else {
             throw new UnknownOperandException(get_class($number));
         }
