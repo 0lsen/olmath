@@ -6,6 +6,7 @@ namespace Math\Model\Vector;
 use Math\Exception\DimensionException;
 use Math\Exception\UnknownOperandException;
 use Math\Model\Number\Number;
+use Math\Model\Number\Zero;
 
 class SparseVector extends AbstractVector
 {
@@ -16,6 +17,16 @@ class SparseVector extends AbstractVector
         }
         $this->dim = $dim;
         $this->entries = $entries;
+    }
+
+    public function scalarMultiplyWith(Number $number)
+    {
+        if ($number instanceof Zero) {
+            $this->entries = [];
+        } else {
+            parent::processScalarMultiplyWith($number);
+        }
+        return $this;
     }
 
     public function addVector(VectorInterface $vector)

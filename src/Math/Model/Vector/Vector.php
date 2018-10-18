@@ -16,6 +16,16 @@ class Vector extends AbstractVector
         $this->dim = sizeof($this->entries);
     }
 
+    public function scalarMultiplyWith(Number $number)
+    {
+        if ($number instanceof Zero) {
+            $this->entries = array_fill(0, $this->dim-1, Zero::getInstance());
+        } else {
+            parent::processScalarMultiplyWith($number);
+        }
+        return $this;
+    }
+
     public function addVector(VectorInterface $vector)
     {
         parent::addVector($vector);

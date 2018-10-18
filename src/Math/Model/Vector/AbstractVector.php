@@ -41,12 +41,11 @@ abstract class AbstractVector extends MathConstruct implements VectorInterface
         return $sum->squareRoot();
     }
 
-    public function scalarMultiplyWith(Number $number)
+    protected function processScalarMultiplyWith(Number $number)
     {
         foreach ($this->entries as &$entry) {
             $entry = $entry->multiplyWith($number);
         }
-        return $this;
     }
 
     public function addVector(VectorInterface $vector)
