@@ -9,6 +9,18 @@ use PHPUnit\Framework\TestCase;
 
 class VectorTest extends TestCase
 {
+
+    public function testToString()
+    {
+        $vector = new Vector(
+            new RealNumber(1.2),
+            Zero::getInstance(),
+            new RealNumber(-3.4)
+        );
+
+        $this->assertEquals("[ 1.2 ; 0 ; -3.4 ]", (string) $vector);
+    }
+
     public function testNorm()
     {
         $vector = new Vector(
@@ -65,10 +77,10 @@ class VectorTest extends TestCase
             Zero::getInstance()
         );
 
-        $multReal = $vector->scalarMultiplyWith_($numberReal);
-        $multRational = $vector->scalarMultiplyWith_($numberRational);
-        $multComplex = $vector->scalarMultiplyWith_($numberComplex);
-        $multZero = $vector->scalarMultiplyWith_(Zero::getInstance());
+        $multReal = $vector->multiplyWithScalar_($numberReal);
+        $multRational = $vector->multiplyWithScalar_($numberRational);
+        $multComplex = $vector->multiplyWithScalar_($numberComplex);
+        $multZero = $vector->multiplyWithScalar_(Zero::getInstance());
 
         $this->assertEquals(1.69, $multReal->get(0)->value());
         $this->assertEquals(-0.325, $multReal->get(1)->value());

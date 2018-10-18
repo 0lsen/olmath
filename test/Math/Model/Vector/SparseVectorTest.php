@@ -9,6 +9,16 @@ use PHPUnit\Framework\TestCase;
 
 class SparseVectorTest extends TestCase
 {
+    public function testToString()
+    {
+        $vector = new SparseVector(5, [
+            1 => new RealNumber(1.2),
+            2 => Zero::getInstance(),
+            4 => new RealNumber(-3.4)
+        ]);
+
+        $this->assertEquals("[ 1: 1.2 ; 4: -3.4 ]", (string) $vector);
+    }
     public function testNorm()
     {
         $vector = new SparseVector(5, [
@@ -61,10 +71,10 @@ class SparseVectorTest extends TestCase
             2 => clone $numberComplex
         ]);
 
-        $multReal = $vector->scalarMultiplyWith_($numberReal);
-        $multRational = $vector->scalarMultiplyWith_($numberRational);
-        $multComplex = $vector->scalarMultiplyWith_($numberComplex);
-        $multZero = $vector->scalarMultiplyWith_(Zero::getInstance());
+        $multReal = $vector->multiplyWithScalar_($numberReal);
+        $multRational = $vector->multiplyWithScalar_($numberRational);
+        $multComplex = $vector->multiplyWithScalar_($numberComplex);
+        $multZero = $vector->multiplyWithScalar_(Zero::getInstance());
 
         $this->assertEquals(1.69, $multReal->get(0)->value());
         $this->assertEquals(-0.325, $multReal->get(1)->value());

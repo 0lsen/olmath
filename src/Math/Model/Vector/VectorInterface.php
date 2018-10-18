@@ -8,12 +8,15 @@ use Math\Model\Number\Number;
 
 /**
  * Interface VectorInterface
- * @method \Math\Model\Vector\VectorInterface scalarMultiplyWith_(\Math\Model\Number\Number $number)
+ * @method \Math\Model\Vector\VectorInterface multiplyWithScalar_(\Math\Model\Number\Number $number)
  * @method \Math\Model\Vector\VectorInterface addVector_(\Math\Model\Vector\VectorInterface $number)
  * @method \Math\Model\Number\Number get_(int $i)
  */
 interface VectorInterface extends MathInterface
 {
+
+    public function __toString();
+
     /**
      * @return ComparableNumber
      */
@@ -23,7 +26,7 @@ interface VectorInterface extends MathInterface
      * @param Number $number
      * @return VectorInterface
      */
-    public function scalarMultiplyWith(Number $number);
+    public function multiplyWithScalar(Number $number);
 
     /**
      * @param VectorInterface $vector

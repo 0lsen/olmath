@@ -9,7 +9,7 @@ use Math\Model\Number\Zero;
 
 /**
  * Class AbstractVector
- * @method \Math\Model\Vector\VectorInterface scalarMultiplyWith_(\Math\Model\Number\Number $number)
+ * @method \Math\Model\Vector\VectorInterface multiplyWithScalar_(\Math\Model\Number\Number $number)
  * @method \Math\Model\Vector\VectorInterface addVector_(\Math\Model\Vector\VectorInterface $number)
  * @method \Math\Model\Number\Number get_(int $i)
  */
@@ -41,7 +41,7 @@ abstract class AbstractVector extends MathConstruct implements VectorInterface
         return $sum->squareRoot();
     }
 
-    protected function processScalarMultiplyWith(Number $number)
+    protected function processMultiplyWithScalar(Number $number)
     {
         foreach ($this->entries as &$entry) {
             $entry = $entry->multiplyWith($number);

@@ -16,12 +16,22 @@ class Vector extends AbstractVector
         $this->dim = sizeof($this->entries);
     }
 
-    public function scalarMultiplyWith(Number $number)
+    public function __toString()
+    {
+        $string = "[ ";
+        for ($i = 0; $i < $this->dim; $i++) {
+            if ($i) $string .= " ; ";
+            $string .= (string) $this->entries[$i];
+        }
+        return $string . " ]";
+    }
+
+    public function multiplyWithScalar(Number $number)
     {
         if ($number instanceof Zero) {
-            $this->entries = array_fill(0, $this->dim-1, Zero::getInstance());
+            $this->entries = array_fill(0, $this->dim, Zero::getInstance());
         } else {
-            parent::processScalarMultiplyWith($number);
+            parent::processMultiplyWithScalar($number);
         }
         return $this;
     }

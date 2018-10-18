@@ -19,12 +19,36 @@ class SparseVector extends AbstractVector
         $this->entries = $entries;
     }
 
-    public function scalarMultiplyWith(Number $number)
+    public function __toString()
+    {
+        $this->removeZeros();
+        $string = "[ ";
+        $first = true;
+        for ($i = 0; $i < $this->dim; $i++) {
+            if (isset($this->entries[$i])) {
+                if (!$first) $string .= " ; ";
+                else $first = false;
+                $string .= $i . ": " . (string) $this->entries[$i];
+            }
+        }
+        return $string . " ]";
+    }
+
+    private function removeZeros()
+    {
+        foreach ($this->entries as $index => $entry) {
+            if ($entry instanceof Zero) {
+                unset($this->entries[$index]);
+            }
+        }
+    }
+
+    public function multiplyWithScalar(Number $number)
     {
         if ($number instanceof Zero) {
             $this->entries = [];
         } else {
-            parent::processScalarMultiplyWith($number);
+            parent::processMultiplyWithScalar($number);
         }
         return $this;
     }
