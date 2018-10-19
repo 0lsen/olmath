@@ -48,27 +48,30 @@ abstract class AbstractVector extends MathConstruct implements VectorInterface
         }
     }
 
-    public function addVector(VectorInterface $vector)
+    protected function checkVectorDim(VectorInterface $vector)
     {
         if ($this->dim != $vector->getDim()) {
-            throw new DimensionException('vector dimensions don\'t fit');
+            throw new DimensionException('vector dimensions do not fit. '.$this->dim.' expected, '.$vector->getDim().' found.');
         }
     }
 
     public function get(int $i)
     {
-        if ($i >= $this->dim) {
-            throw new DimensionException('vector entry index is out of range');
-        }
-        return $this->entries[$i] ?? Zero::getInstance();
+        $this->checkEntryDim($i);
+        return $this->entries[$i-1] ?? Zero::getInstance();
     }
 
     public function set(int $i, Number $number)
     {
-        if ($i >= $this->dim) {
-            throw new DimensionException('vector entry index is out of range');
-        }
-        $this->entries[$i] = $number;
+        $this->checkEntryDim($i);
+        $this->entries[$i-1] = $number;
         return $this;
+    }
+
+    private function checkEntryDim(int $i)
+    {
+        if ($i > $this->dim) {
+            throw new DimensionException('vector entry index '.$i.' is out of range ('.$this->dim.')');
+        }
     }
 }

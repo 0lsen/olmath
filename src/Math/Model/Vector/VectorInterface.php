@@ -40,6 +40,9 @@ interface VectorInterface extends MathInterface
     public function getDim();
 
     /**
+     * Do NOT use to change the value!
+     * Will not affect zero sparse elements and won't work when Number conversion occurs (like adding a Real to a Rational Number).
+     *
      * @param int $i
      * @return Number
      */

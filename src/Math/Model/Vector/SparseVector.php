@@ -12,8 +12,9 @@ class SparseVector extends AbstractVector
 {
     public function __construct($dim, $entries = [])
     {
+        //TODO: take in keys from 1:n instead of 0:n-1 and more checks (non-numeric keys and 0)
         if (max(array_keys($entries)) >= $dim) {
-            throw new DimensionException('vector entry index is out of range');
+            throw new DimensionException('vector entry index ('.max(array_keys($entries)).') is out of range ('.$dim.').');
         }
         $this->dim = $dim;
         $this->entries = $entries;
@@ -28,7 +29,7 @@ class SparseVector extends AbstractVector
             if (isset($this->entries[$i])) {
                 if (!$first) $string .= " ; ";
                 else $first = false;
-                $string .= $i . ": " . (string) $this->entries[$i];
+                $string .= $i+1 . ": " . (string) $this->entries[$i];
             }
         }
         return $string . " ]";
@@ -55,14 +56,14 @@ class SparseVector extends AbstractVector
 
     public function addVector(VectorInterface $vector)
     {
-        parent::addVector($vector);
+        $this->checkVectorDim($vector);
         if ($vector instanceof SparseVector) {
             foreach ($vector->getIndices() as $i) {
-                $this->set($i, $this->get($i)->add($vector->get($i)));
+                $this->set($i+1, $this->get($i+1)->add($vector->get($i+1)));
             }
         } elseif ($vector instanceof Vector) {
             for ($i = 0; $i < $vector->getDim(); $i++) {
-                $this->set($i, $this->get($i)->add($vector->get($i)));
+                $this->set($i+1, $this->get($i+1)->add($vector->get($i+1)));
             }
         } else {
             throw new UnknownOperandException(get_class($vector));
@@ -70,6 +71,10 @@ class SparseVector extends AbstractVector
         return $this;
     }
 
+    /**
+     * Will, for now, return internal keys 0:n-1 instead of logical 1:n
+     * @return array
+     */
     public function getIndices()
     {
         return array_keys($this->entries);
@@ -85,7 +90,7 @@ class SparseVector extends AbstractVector
     {
         if ($vector instanceof SparseVector) {
             foreach ($vector->getIndices() as $index) {
-                $this->entries[$this->dim+$index] = $vector->get_($index);
+                $this->entries[$this->dim+$index] = $vector->get_($index+1);
             }
         } elseif ($vector instanceof Vector) {
             for ($i = 0; $i < $vector->getDim(); $i++) {

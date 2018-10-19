@@ -9,7 +9,6 @@ use PHPUnit\Framework\TestCase;
 
 class VectorTest extends TestCase
 {
-
     public function testToString()
     {
         $vector = new Vector(
@@ -82,30 +81,30 @@ class VectorTest extends TestCase
         $multComplex = $vector->multiplyWithScalar_($numberComplex);
         $multZero = $vector->multiplyWithScalar_(Zero::getInstance());
 
-        $this->assertEquals(1.69, $multReal->get(0)->value());
-        $this->assertEquals(-0.325, $multReal->get(1)->value());
-        $this->assertEquals(1.69, $multReal->get(2)->getR()->value());
-        $this->assertEquals(-0.325, $multReal->get(2)->getI()->value());
-        $this->assertEquals(0, $multReal->get(3)->value());
+        $this->assertEquals(1.69, $multReal->get(1)->value());
+        $this->assertEquals(-0.325, $multReal->get(2)->value());
+        $this->assertEquals(1.69, $multReal->get(3)->getR()->value());
+        $this->assertEquals(-0.325, $multReal->get(3)->getI()->value());
+        $this->assertEquals(0, $multReal->get(4)->value());
 
-        $this->assertEquals(-0.325, $multRational->get(0)->value());
-        $this->assertEquals(0.0625, $multRational->get(1)->value());
-        $this->assertEquals(-0.325, $multRational->get(2)->getR()->value());
-        $this->assertEquals(0.0625, $multRational->get(2)->getI()->value());
-        $this->assertEquals(0, $multRational->get(3)->value());
+        $this->assertEquals(-0.325, $multRational->get(1)->value());
+        $this->assertEquals(0.0625, $multRational->get(2)->value());
+        $this->assertEquals(-0.325, $multRational->get(3)->getR()->value());
+        $this->assertEquals(0.0625, $multRational->get(3)->getI()->value());
+        $this->assertEquals(0, $multRational->get(4)->value());
 
-        $this->assertEquals(1.69, $multComplex->get(0)->getR()->value());
-        $this->assertEquals(-0.325, $multComplex->get(0)->getI()->value());
-        $this->assertEquals(-0.325, $multComplex->get(1)->getR()->value());
-        $this->assertEquals(0.0625, $multComplex->get(1)->getI()->value());
-        $this->assertEquals(1.69-0.0625, $multComplex->get(2)->getR()->value());
-        $this->assertEquals(-0.65, $multComplex->get(2)->getI()->value());
-        $this->assertEquals(0, $multComplex->get(3)->value());
+        $this->assertEquals(1.69, $multComplex->get(1)->getR()->value());
+        $this->assertEquals(-0.325, $multComplex->get(1)->getI()->value());
+        $this->assertEquals(-0.325, $multComplex->get(2)->getR()->value());
+        $this->assertEquals(0.0625, $multComplex->get(2)->getI()->value());
+        $this->assertEquals(1.69-0.0625, $multComplex->get(3)->getR()->value());
+        $this->assertEquals(-0.65, $multComplex->get(3)->getI()->value());
+        $this->assertEquals(0, $multComplex->get(4)->value());
 
-        $this->assertEquals(0, $multZero->get(0)->value());
         $this->assertEquals(0, $multZero->get(1)->value());
         $this->assertEquals(0, $multZero->get(2)->value());
         $this->assertEquals(0, $multZero->get(3)->value());
+        $this->assertEquals(0, $multZero->get(4)->value());
     }
 
     public function testAddVector()
@@ -130,12 +129,12 @@ class VectorTest extends TestCase
 
         $vector1->addVector($vector2);
 
-        $this->assertEquals(1.05, $vector1->get(0)->value());
-        $this->assertEquals(1.05, $vector1->get(1)->getR()->value());
-        $this->assertEquals(-0.25, $vector1->get(1)->getI()->value());
-        $this->assertEquals(1.3, $vector1->get(2)->getR()->value());
+        $this->assertEquals(1.05, $vector1->get(1)->value());
+        $this->assertEquals(1.05, $vector1->get(2)->getR()->value());
         $this->assertEquals(-0.25, $vector1->get(2)->getI()->value());
-        $this->assertEquals(1.3, $vector1->get(3)->value());
+        $this->assertEquals(1.3, $vector1->get(3)->getR()->value());
+        $this->assertEquals(-0.25, $vector1->get(3)->getI()->value());
+        $this->assertEquals(1.3, $vector1->get(4)->value());
     }
 
     //TODO: testGetDim()

@@ -38,9 +38,9 @@ class Vector extends AbstractVector
 
     public function addVector(VectorInterface $vector)
     {
-        parent::addVector($vector);
+        $this->checkVectorDim($vector);
         foreach ($this->entries as $index => &$entry) {
-            $entry = $entry->add($vector->get_($index));
+            $entry = $entry->add($vector->get_($index+1));
         }
         return $this;
     }
@@ -56,13 +56,13 @@ class Vector extends AbstractVector
     {
         if ($vector instanceof Vector) {
             for ($i = 0; $i < $vector->getDim(); $i++) {
-                $this->entries[] = $vector->get_($i);
+                $this->entries[] = $vector->get_($i+1);
             }
         } elseif ($vector instanceof SparseVector) {
             $indices = $vector->getIndices();
             for ($i = 0; $i < $vector->getDim(); $i++) {
                 $this->entries[] = in_array($i, $indices)
-                    ? $vector->get_($i)
+                    ? $vector->get_($i+1)
                     : Zero::getInstance();
             }
         } else {
