@@ -44,7 +44,7 @@ class RationalNumberTest extends TestCase
         $this->assertEquals("2", (string) $number);
 
         $number = new RationalNumber(6, 3, -1);
-        $this->assertEquals("- 2", (string) $number);
+        $this->assertEquals("-2", (string) $number);
 
         $number = new RationalNumber(7, 3, 1);
         $this->assertEquals("2 1/3", (string) $number);

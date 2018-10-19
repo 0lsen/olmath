@@ -72,7 +72,10 @@ class RationalNumber extends AbstractNumber implements ComparableNumber
         $mod = $this->n % $this->d;
 
         $string = "";
-        if ($this->s < 0) $string .= "- ";
+        if ($this->s < 0) {
+            $string .= "-";
+            if ($mod) $string .= " ";
+        }
         if ($int) $string .= $int;
         if ($int && $mod) $string .= " ";
         if ($mod) $string .= $mod."/".$this->d;
