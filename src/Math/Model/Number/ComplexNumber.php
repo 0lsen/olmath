@@ -101,7 +101,7 @@ class ComplexNumber extends AbstractNumber
 
     public function add(Number $number)
     {
-        if ($number instanceof RealNumber) {
+        if ($number instanceof ComparableNumber) {
             $this->r = $this->r->add($number);
         } elseif ($number instanceof ComplexNumber) {
             $this->r = $this->r->add_($number->r);

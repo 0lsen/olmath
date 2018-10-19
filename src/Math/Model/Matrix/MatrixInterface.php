@@ -8,6 +8,9 @@ use Math\Model\Vector\VectorInterface;
 /**
  * Interface MatrixInterface
  * @method \Math\Model\Matrix\MatrixInterface transpose_()
+ * @method \Math\Model\Matrix\MatrixInterface multiplyWithScalar_(Number $number)
+ * @method \Math\Model\Vector\VectorInterface multiplyWithVector_(VectorInterface $vector)
+ * @method \Math\Model\Number\Number get_()
  */
 interface MatrixInterface extends \Math\MathInterface
 {
@@ -29,4 +32,33 @@ interface MatrixInterface extends \Math\MathInterface
      * @return VectorInterface
      */
     public function multiplyWithVector(VectorInterface $vector);
+
+    /**
+     * @return int[]
+     */
+    public function getDims();
+
+    /**
+     * Do NOT use to change the value!
+     * Will not affect zero sparse elements and won't work when Number conversion occurs (like adding a Real to a Rational Number).
+     *
+     * @param int $i
+     * @param int $j
+     * @return Number
+     */
+    public function get(int $i, int $j);
+
+//TODO:    public function getRow(int $i);
+
+//TODO:    public function getCol(int $i);
+
+//TODO:    public function set(int $m, int $n);
+
+//TODO:    public function setRow(int $i);
+
+//TODO:    public function setCol(int $i);
+
+//TODO:    public function appendRow(VectorInterface $vector);
+
+//TODO:    public function appendCol(VectorInterface $vector);
 }

@@ -22,8 +22,8 @@ class SingleElement
      */
     public function __construct(int $row, int $col, Number $number)
     {
-        $this->row = $row;
-        $this->col = $col;
+        $this->row = $row-1;
+        $this->col = $col-1;
         $this->number = $number;
     }
 

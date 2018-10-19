@@ -17,21 +17,21 @@ use Math\Model\Vector\VectorInterface;
 class SparseMatrix extends AbstractMatrix
 {
     /** @var int[] */
-    private $rowIndices;
+    private $rowIndices = [];
     /** @var int[] */
-    private $colIndices;
+    private $colIndices = [];
 
-    public function __construct(int $n, int $m, SingleElement ...$entries)
+    public function __construct(int $rows, int $cols, SingleElement ...$entries)
     {
-        $this->dimN = $n;
-        $this->dimM = $m;
+        $this->dimM = $rows;
+        $this->dimN = $cols;
 
         foreach ($entries as $entry) {
             if ($this->entryAlreadyExists($entry)) {
-                throw new \Exception('SingleElement coordinates already set');
+                throw new \Exception('SingleElement coordinates ('.($entry->getRow()+1).':'.($entry->getCol()+1).') are already occupied.');
             }
-            if ($entry->getRow() >= $n || $entry->getCol() >= $m) {
-                throw new DimensionException('matrix element out of bounds');
+            if ($entry->getRow() >= $rows || $entry->getCol() >= $cols) {
+                throw new DimensionException('matrix element ('.($entry->getRow()+1).':'.($entry->getCol()+1).') is out of bounds ('.$this->dimM.':'.$this->dimN.').');
             }
             $this->entries[] = $entry->getNumber();
             $this->rowIndices[] = $entry->getRow();
@@ -41,10 +41,36 @@ class SparseMatrix extends AbstractMatrix
 
     public function __toString()
     {
+        if (!$this->entries) return "[ ]";
         $string = "";
-
-        // TODO
-
+        $longestEntries = array_fill(0, $this->dimN, 0);
+        for ($i = 0; $i < $this->dimM; $i++) {
+            foreach (array_keys($this->colIndices, $i) as $index) {
+                $strLen = strlen((string) $this->entries[$index]) + strlen((string) ($i+1)) + strlen((string) ($this->rowIndices[$index]+1));
+                if ($longestEntries[$i] < $strLen)
+                    $longestEntries[$i] = $strLen;
+            }
+        }
+        for ($i = 0; $i < $this->dimM; $i++) {
+            if (!array_keys($this->rowIndices, $i)) continue;
+            if ($string) $string .= "\n";
+            $string .= "[ ";
+            for ($j = 0; $j < $this->dimN; $j++) {
+                if (!$longestEntries[$j]) continue;
+                if ($j) $string .= "   ";
+                $match = array_intersect(array_keys($this->rowIndices, $i), array_keys($this->colIndices, $j));
+                if ($match) {
+                    $str = (string) $this->entries[reset($match)];
+                    $spaces = $longestEntries[$j]-strlen($str)-strlen((string) ($i+1))-strlen((string) ($j+1));
+                    $string .= ($i+1) . "," . ($j+1) . ": ";
+                    if ($spaces) $string .= str_repeat(" ", $spaces);
+                    $string .= $str;
+                } else {
+                    $string .= str_repeat(" ", $longestEntries[$j]+3);
+                }
+            }
+            $string .= " ]";
+        }
         return $string;
     }
 
@@ -59,8 +85,8 @@ class SparseMatrix extends AbstractMatrix
     public function transpose()
     {
         $dimM = $this->dimM;
-        $this->dimM = $this->dimN;
-        $this->dimN = $dimM;
+        $this->dimN = $this->dimM;
+        $this->dimM = $dimM;
 
         $rowIndices = $this->rowIndices;
         $this->rowIndices = $this->colIndices;
@@ -83,19 +109,26 @@ class SparseMatrix extends AbstractMatrix
 
     public function multiplyWithVector(VectorInterface $vector)
     {
-        if ($vector->getDim() != $this->dimM) {
-            throw new DimensionException('matrix and vector dimensions do not match');
-        }
+        $this->checkVectorDim($vector);
         $result = [];
-        for ($i = 0; $i < $this->dimN; $i++) {
+        for ($i = 0; $i < $this->dimM; $i++) {
             $sum = Zero::getInstance();
             $rowElements = array_keys($this->rowIndices, $i);
             foreach ($rowElements as $j) {
-                $sum = $sum->add($vector->get($i)->multiplyWith($this->entries[$j]));
+                $sum = $sum->add($vector->get($this->colIndices[$j]+1)->multiplyWith_($this->entries[$j]));
             }
             $result[] = $sum;
         }
 
-        return new Vector($result);
+        return new Vector(...$result);
+    }
+
+    public function get(int $i, int $j)
+    {
+        $this->checkDims($i, $j);
+        $rowMatches = array_keys($this->rowIndices, $i);
+        $colMatches = array_keys($this->colIndices, $j);
+        $match = array_intersect($rowMatches, $colMatches);
+        return $match ? $this->entries[reset($match)] : Zero::getInstance();
     }
 }

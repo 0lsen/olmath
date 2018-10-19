@@ -57,7 +57,7 @@ abstract class AbstractVector extends MathConstruct implements VectorInterface
 
     public function get(int $i)
     {
-        $this->checkEntryDim($i);
+        $this->checkEntryDim($i-1);
         return $this->entries[$i-1] ?? Zero::getInstance();
     }
 

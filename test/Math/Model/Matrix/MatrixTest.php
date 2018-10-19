@@ -2,7 +2,11 @@
 
 use Math\Model\Matrix\Matrix;
 use Math\Model\Matrix\MatrixInterface;
+use Math\Model\Number\ComplexNumber;
+use Math\Model\Number\RationalNumber;
 use Math\Model\Number\RealNumber;
+use Math\Model\Number\Zero;
+use Math\Model\Vector\Vector;
 use PHPUnit\Framework\TestCase;
 
 class MatrixTest extends TestCase
@@ -13,7 +17,7 @@ class MatrixTest extends TestCase
     public function setUp()
     {
         $this->matrix = new Matrix(
-            [new RealNumber(1), new RealNumber(2), new RealNumber(3)],
+            [new RealNumber(1), new RationalNumber(1, 2, 1), new ComplexNumber(new RationalNumber(2), new RationalNumber(1,4, -1))],
             [new RealNumber(4), new RealNumber(-5), new RealNumber(666)]
         );
         parent::setUp();
@@ -21,15 +25,41 @@ class MatrixTest extends TestCase
 
     public function testToString()
     {
-        $this->assertEquals("[ 1 |  2 |   3 ]\n[ 4 | -5 | 666 ]", (string) $this->matrix);
+        $this->assertEquals(""
+                            ."[ 1 | 1/2 | 2 - 1/4 i ]\n"
+                            ."[ 4 |  -5 |       666 ]", (string) $this->matrix);
     }
 
     public function testTranspose()
     {
-        $this->assertEquals("[ 1 |   4 ]\n[ 2 |  -5 ]\n[ 3 | 666 ]", (string) $this->matrix->transpose_());
+        $this->assertEquals(""
+                            ."[         1 |   4 ]\n"
+                            ."[       1/2 |  -5 ]\n"
+                            ."[ 2 - 1/4 i | 666 ]", (string) $this->matrix->transpose_());
     }
 
-    //TODO: testMultiplyWithScalar()
-    //TODO: testMultiplyWithVector()
+    public function testMultiplyWithScalar()
+    {
+        $this->assertEquals(""
+                            ."[ 2 |   1 | 4 - 1/2 i ]\n"
+                            ."[ 8 | -10 |      1332 ]", (string) $this->matrix->multiplyWithScalar_(new RationalNumber(2)));
+    }
+
+    public function testMultiplyWithVector()
+    {
+        $vector = new Vector(
+            new RationalNumber(1),
+            new RationalNumber(2),
+            Zero::getInstance()
+        );
+
+        $product = $this->matrix->multiplyWithVector_($vector);
+
+        $this->assertEquals(2, $product->getDim());
+        $this->assertEquals(2, $product->get(1)->value());
+        $this->assertEquals(-6, $product->get(2)->value());
+    }
+
+    //TODO: testGet()
     //TODO: testDimensionExceptions()
 }
