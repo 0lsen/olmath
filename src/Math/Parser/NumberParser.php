@@ -1,17 +1,17 @@
 <?php
 
-namespace Math;
+namespace Math\Parser;
 
 use Math\Exception\DivisionByZeroException;
 use Math\Model\Number\ComplexNumber;
 
-abstract class Parser
+abstract class NumberParser
 {
     private static $operators = '\+\-\/*';
     private static $operatorsToReplace = ',\\xe3\\x97\\xe3\\xb7';
     private static $validSymbols;
 
-    private static $regexNumber = '((?:(?<![)0-9i])-)?(?:(?:[0-9]+)?\.)?(?:[0-9]+)?i?)';
+    private static $regexNumber = '((?:(?<![)0-9i])-)?(?:(?:[0-9]+)?\.)?(?:[0-9]+)|i)';
     private static $regexFormula;
     private static $regexBracket = '\([^()]+\)';
 
@@ -26,7 +26,7 @@ abstract class Parser
 
     /**
      * @param $string
-     * @return Result[]
+     * @return NumberResult[]
      */
     static function evaluate($string)
     {
@@ -36,8 +36,8 @@ abstract class Parser
                 self::$numbers = [];
                 $originalMatch = $match;
                 $match = preg_replace(
-                    array('#\s+#', '#,#', '#\\xe3\\x97#', '#\\xe3\\xb7#'),
-                    array('', '.', '*', '/'),
+                    array('#\s+#', '#,#', '#\\xe3\\x97#', '#\\xe3\\xb7#', '#(\d)i#'),
+                    array('', '.', '*', '/', '$1*i'),
                     $match
                 );
                 self::parseNumbers($match);
@@ -46,10 +46,10 @@ abstract class Parser
                 }
                 try {
                     if (self::validate($match)) {
-                        $results[] = new Result($originalMatch, end(self::$numbers));
+                        $results[] = new NumberResult($originalMatch, end(self::$numbers));
                     }
                 } catch (DivisionByZeroException $dbz) {
-                    $results[] = new Result($originalMatch, null, true);
+                    $results[] = new NumberResult($originalMatch, null, true);
                 } catch (\Throwable $t) {}
             }
         }

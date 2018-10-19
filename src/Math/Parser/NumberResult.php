@@ -1,10 +1,10 @@
 <?php
 
-namespace Math;
+namespace Math\Parser;
 
 use Math\Model\Number\Number;
 
-class Result
+class NumberResult
 {
     /** @var string */
     private $original;
