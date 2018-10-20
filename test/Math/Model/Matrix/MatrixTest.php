@@ -60,6 +60,17 @@ class MatrixTest extends TestCase
         $this->assertEquals(-6, $product->get(2)->value());
     }
 
-    //TODO: testGet()
+    public function testGetRow()
+    {
+        $row = $this->matrix->getRow_(2);
+        $this->assertEquals('[ 4 ; -5 ; 666 ]', (string) $row);
+    }
+
+    public function testGetCol()
+    {
+        $row = $this->matrix->getCol_(2);
+        $this->assertEquals('[ 1/2 ; -5 ]', (string) $row);
+    }
+
     //TODO: testDimensionExceptions()
 }

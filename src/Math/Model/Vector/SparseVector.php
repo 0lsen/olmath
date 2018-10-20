@@ -13,7 +13,7 @@ class SparseVector extends AbstractVector
     public function __construct($dim, $entries = [])
     {
         //TODO: take in keys from 1:n instead of 0:n-1 and more checks (non-numeric keys and 0)
-        if (max(array_keys($entries)) >= $dim) {
+        if ($entries && max(array_keys($entries)) >= $dim) {
             throw new DimensionException('vector entry index ('.max(array_keys($entries)).') is out of range ('.$dim.').');
         }
         $this->dim = $dim;

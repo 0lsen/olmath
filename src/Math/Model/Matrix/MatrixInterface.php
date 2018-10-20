@@ -10,7 +10,9 @@ use Math\Model\Vector\VectorInterface;
  * @method \Math\Model\Matrix\MatrixInterface transpose_()
  * @method \Math\Model\Matrix\MatrixInterface multiplyWithScalar_(Number $number)
  * @method \Math\Model\Vector\VectorInterface multiplyWithVector_(VectorInterface $vector)
- * @method \Math\Model\Number\Number get_()
+ * @method \Math\Model\Number\Number get_(int $i, int $j)
+ * @method \Math\Model\Vector\VectorInterface getRow_(int $i)
+ * @method \Math\Model\Vector\VectorInterface getCol_(int $i)
  */
 interface MatrixInterface extends \Math\MathInterface
 {
@@ -48,9 +50,17 @@ interface MatrixInterface extends \Math\MathInterface
      */
     public function get(int $i, int $j);
 
-//TODO:    public function getRow(int $i);
+    /**
+     * @param int $i
+     * @return VectorInterface
+     */
+    public function getRow(int $i);
 
-//TODO:    public function getCol(int $i);
+    /**
+     * @param int $i
+     * @return VectorInterface
+     */
+    public function getCol(int $i);
 
 //TODO:    public function set(int $m, int $n);
 

@@ -94,6 +94,24 @@ class Matrix extends AbstractMatrix
     public function get(int $i, int $j)
     {
         $this->checkDims($i, $j);
-        return $this->entries[$i*$this->dimM + $j];
+        return $this->entries[--$i*$this->dimN + --$j];
+    }
+
+    public function getRow(int $i)
+    {
+        $entries = [];
+        for ($j = 0; $j < $this->dimN; $j++) {
+            $entries[] = $this->get($i, $j+1);
+        }
+        return new Vector(...$entries);
+    }
+
+    public function getCol(int $i)
+    {
+        $entries = [];
+        for ($j = 0; $j < $this->dimM; $j++) {
+            $entries[] = $this->get($j+1, $i);
+        }
+        return new Vector(...$entries);
     }
 }

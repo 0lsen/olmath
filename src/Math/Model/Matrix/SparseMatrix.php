@@ -7,6 +7,7 @@ use Math\Exception\DimensionException;
 use Math\Model\Matrix\SparseInput\SingleElement;
 use Math\Model\Number\Number;
 use Math\Model\Number\Zero;
+use Math\Model\Vector\SparseVector;
 use Math\Model\Vector\Vector;
 use Math\Model\Vector\VectorInterface;
 
@@ -131,4 +132,24 @@ class SparseMatrix extends AbstractMatrix
         $match = array_intersect($rowMatches, $colMatches);
         return $match ? $this->entries[reset($match)] : Zero::getInstance();
     }
+
+    public function getRow(int $i)
+    {
+        $entries = [];
+        foreach (array_keys($this->rowIndices, $i-1) as $index) {
+            $entries[$this->colIndices[$index]] = $this->entries[$index];
+        }
+        return new SparseVector($this->dimM, $entries);
+    }
+
+    public function getCol(int $i)
+    {
+        $entries = [];
+        foreach (array_keys($this->colIndices, $i-1) as $index) {
+            $entries[$this->rowIndices[$index]] = $this->entries[$index];
+        }
+        return new SparseVector($this->dimN, $entries);
+    }
+
+
 }

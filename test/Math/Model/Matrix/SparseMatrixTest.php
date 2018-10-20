@@ -81,6 +81,29 @@ class SparseMatrixTest extends TestCase
         $this->assertEquals(5, $product->get(10)->getI()->value());
     }
 
-    //TODO: testGet()
+    public function testGetRow()
+    {
+        $row = $this->matrix->getRow_(1);
+        $this->assertEquals('[ 1: 1 ; 2: 2 - 1/4 i ; 3: 3 ]', (string) $row);
+
+        $row = $this->matrix->getRow_(2);
+        $this->assertEquals('[ 1: -5 ]', (string) $row);
+
+        $row = $this->matrix->getRow_(3);
+        $this->assertEquals('[  ]', (string) $row);
+    }
+
+    public function testGetCol()
+    {
+        $row = $this->matrix->getCol_(1);
+        $this->assertEquals('[ 1: 1 ; 2: -5 ]', (string) $row);
+
+        $row = $this->matrix->getCol_(2);
+        $this->assertEquals('[ 1: 2 - 1/4 i ]', (string) $row);
+
+        $row = $this->matrix->getCol_(4);
+        $this->assertEquals('[  ]', (string) $row);
+    }
+
     //TODO: testDimensionExceptions()
 }
