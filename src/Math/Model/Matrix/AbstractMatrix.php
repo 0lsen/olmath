@@ -16,6 +16,9 @@ use Math\Model\Vector\VectorInterface;
  * @method \Math\Model\Number\Number get_(int $i, int $j)
  * @method \Math\Model\Vector\VectorInterface getRow_(int $i)
  * @method \Math\Model\Vector\VectorInterface getCol_(int $i)
+ * @method \Math\Model\Matrix\MatrixInterface set_(int $i, int $j, Number $number)
+ * @method \Math\Model\Matrix\MatrixInterface setRow_(int $i, VectorInterface $vector)
+ * @method \Math\Model\Matrix\MatrixInterface setCol_(int $i, VectorInterface $vector)
  */
 abstract class AbstractMatrix extends MathConstruct implements MatrixInterface
 {
@@ -40,9 +43,12 @@ abstract class AbstractMatrix extends MathConstruct implements MatrixInterface
         }
     }
 
-    protected function checkVectorDim(VectorInterface $vector)
+    protected function checkVectorDim(VectorInterface $vector, bool $checkCol = true)
     {
-        if ($vector->getDim() != $this->dimN) {
+        if (
+            ($checkCol && $vector->getDim() != $this->dimN) ||
+            (!$checkCol && $vector->getDim() != $this->dimM)
+        ) {
             throw new DimensionException('matrix dimensions ('.$this->dimM.':'.$this->dimN.') and vector dimension ('.$vector->getDim().') do not match.');
         }
     }

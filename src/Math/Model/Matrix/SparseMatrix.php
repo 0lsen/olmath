@@ -11,10 +11,6 @@ use Math\Model\Vector\SparseVector;
 use Math\Model\Vector\Vector;
 use Math\Model\Vector\VectorInterface;
 
-/**
- * Class SparseMatrix
- * @method \Math\Model\Matrix\MatrixInterface transpose_()
- */
 class SparseMatrix extends AbstractMatrix
 {
     /** @var int[] */
@@ -151,5 +147,56 @@ class SparseMatrix extends AbstractMatrix
         return new SparseVector($this->dimN, $entries);
     }
 
+    public function set(int $i, int $j, Number $number)
+    {
+        $this->checkDims($i, $j);
+        $match = array_intersect(array_keys($this->rowIndices, --$i), array_keys($this->colIndices, --$j));
+        if ($match) {
+            $this->entries[reset($match)] = $number;
+        } else {
+            $this->rowIndices[] = $i;
+            $this->colIndices[] = $j;
+            $this->entries[] = $number;
+        }
+        return $this;
+    }
 
+    private function unset(int $i, int $j)
+    {
+        $match = array_intersect(array_keys($this->rowIndices, $i), array_keys($this->colIndices, $j));
+        if ($match) {
+            $index = reset($match);
+            array_splice($this->rowIndices, $index, 1);
+            array_splice($this->colIndices, $index, 1);
+            array_splice($this->entries, $index, 1);
+        }
+    }
+
+    public function setRow(int $i, VectorInterface $vector)
+    {
+        $this->checkVectorDim($vector);
+        for ($j = 0; $j < $this->dimN; $j++) {
+            $entry = $vector->get($j+1);
+            if ($entry->value() == 0) {
+                $this->unset($i, $j+1);
+            } else {
+                $this->set($i, $j+1, $entry);
+            }
+        }
+        return $this;
+    }
+
+    public function setCol(int $i, VectorInterface $vector)
+    {
+        $this->checkVectorDim($vector, false);
+        for ($j = 0; $j < $this->dimM; $j++) {
+            $entry = $vector->get($j+1);
+            if ($entry->value() == 0) {
+                $this->unset($j+1, $i);
+            } else {
+                $this->set($j+1, $i, $entry);
+            }
+        }
+        return $this;
+    }
 }

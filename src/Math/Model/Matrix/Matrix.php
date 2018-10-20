@@ -114,4 +114,29 @@ class Matrix extends AbstractMatrix
         }
         return new Vector(...$entries);
     }
+
+    public function set(int $i, int $j, Number $number)
+    {
+        $this->checkDims($i, $j);
+        $this->entries[--$i*$this->dimN + --$j] = $number;
+        return $this;
+    }
+
+    public function setRow(int $i, VectorInterface $vector)
+    {
+        $this->checkVectorDim($vector);
+        for ($j = 0; $j < $this->dimN; $j++) {
+            $this->set($i, $j+1, $vector->get($j+1));
+        }
+        return $this;
+    }
+
+    public function setCol(int $i, VectorInterface $vector)
+    {
+        $this->checkVectorDim($vector, false);
+        for ($j = 0; $j < $this->dimM; $j++) {
+            $this->set($j+1, $i, $vector->get($j+1));
+        }
+        return $this;
+    }
 }

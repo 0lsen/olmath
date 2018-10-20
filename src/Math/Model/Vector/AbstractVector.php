@@ -12,6 +12,7 @@ use Math\Model\Number\Zero;
  * @method \Math\Model\Vector\VectorInterface multiplyWithScalar_(\Math\Model\Number\Number $number)
  * @method \Math\Model\Vector\VectorInterface addVector_(\Math\Model\Vector\VectorInterface $number)
  * @method \Math\Model\Number\Number get_(int $i)
+ * @method \Math\Model\Vector\VectorInterface set_(int $i, Number $number)
  */
 abstract class AbstractVector extends MathConstruct implements VectorInterface
 {

@@ -105,5 +105,31 @@ class SparseMatrixTest extends TestCase
         $this->assertEquals('[  ]', (string) $row);
     }
 
+    public function testSetRow()
+    {
+        $vector = new SparseVector(6, [
+            0 => new RationalNumber(7),
+            2 => new RationalNumber(8)
+        ]);
+
+        $this->assertEquals(""
+            ."[ 1,1: 1   1,2: 2 - 1/4 i   1,3: 3           ]\n"
+            ."[ 2,1: 7                    2,3: 8           ]\n"
+            ."[                                    10,5: i ]", (string) $this->matrix->setRow_(2, $vector));
+    }
+
+    public function testSetCol()
+    {
+        $vector = new SparseVector(10, [
+            0 => new RationalNumber(7),
+            9 => new RationalNumber(8)
+        ]);
+
+        $this->assertEquals(""
+            ."[ 1,1:  1   1,2:  7   1,3: 3           ]\n"
+            ."[ 2,1: -5                              ]\n"
+            ."[           10,2: 8            10,5: i ]", (string) $this->matrix->setCol_(2, $vector));
+    }
+
     //TODO: testDimensionExceptions()
 }

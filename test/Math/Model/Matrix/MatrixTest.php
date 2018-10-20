@@ -72,5 +72,30 @@ class MatrixTest extends TestCase
         $this->assertEquals('[ 1/2 ; -5 ]', (string) $row);
     }
 
+    public function testSetRow()
+    {
+        $vector = new Vector(
+            new RationalNumber(7),
+            new RationalNumber(8),
+            new RationalNumber(9)
+        );
+
+        $this->assertEquals(""
+            ."[ 1 | 1/2 | 2 - 1/4 i ]\n"
+            ."[ 7 |   8 |         9 ]", (string) $this->matrix->setRow_(2, $vector));
+    }
+
+    public function testSetCol()
+    {
+        $vector = new Vector(
+            new RationalNumber(7),
+            new RationalNumber(8)
+        );
+
+        $this->assertEquals(""
+            ."[ 1 | 7 | 2 - 1/4 i ]\n"
+            ."[ 4 | 8 |       666 ]", (string) $this->matrix->setCol_(2, $vector));
+    }
+
     //TODO: testDimensionExceptions()
 }

@@ -13,6 +13,9 @@ use Math\Model\Vector\VectorInterface;
  * @method \Math\Model\Number\Number get_(int $i, int $j)
  * @method \Math\Model\Vector\VectorInterface getRow_(int $i)
  * @method \Math\Model\Vector\VectorInterface getCol_(int $i)
+ * @method \Math\Model\Matrix\MatrixInterface set_(int $i, int $j, Number $number)
+ * @method \Math\Model\Matrix\MatrixInterface setRow_(int $i, VectorInterface $vector)
+ * @method \Math\Model\Matrix\MatrixInterface setCol_(int $i, VectorInterface $vector)
  */
 interface MatrixInterface extends \Math\MathInterface
 {
@@ -62,11 +65,28 @@ interface MatrixInterface extends \Math\MathInterface
      */
     public function getCol(int $i);
 
-//TODO:    public function set(int $m, int $n);
 
-//TODO:    public function setRow(int $i);
+    /**
+     * @param int $i
+     * @param int $j
+     * @param Number $number
+     * @return MatrixInterface
+     */
+    public function set(int $i, int $j, Number $number);
 
-//TODO:    public function setCol(int $i);
+    /**
+     * @param int $i
+     * @param VectorInterface $vector
+     * @return MatrixInterface
+     */
+    public function setRow(int $i, VectorInterface $vector);
+
+    /**
+     * @param int $i
+     * @param VectorInterface $vector
+     * @return MatrixInterface
+     */
+    public function setCol(int $i, VectorInterface $vector);
 
 //TODO:    public function appendRow(VectorInterface $vector);
 

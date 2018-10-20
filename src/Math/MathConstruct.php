@@ -19,7 +19,7 @@ abstract class MathConstruct
             $operator = substr($name, 0, -1);
             if (is_callable([$this, $operator])) {
                 $clone = clone $this;
-                return call_user_func([$clone, $operator], $arguments[0] ?? null);
+                return call_user_func([$clone, $operator], ...$arguments ?? null);
             } else {
                 throw new UnknownOperatorException($operator);
             }
