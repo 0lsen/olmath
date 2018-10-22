@@ -3,6 +3,7 @@
 namespace Math\Parser;
 
 use Math\Exception\DivisionByZeroException;
+use Math\Exception\ParserException;
 use Math\Model\Number\ComplexNumber;
 
 class NumberParser
@@ -12,16 +13,29 @@ class NumberParser
     private static $validSymbols;
 
     private static $regexNumber = '((?:(?<![)0-9i])-)?(?:(?:[0-9]+)?\.)?(?:[0-9]+)|i)';
-    private static $regexBinaryFormula;
+    private static $regexFormula;
     private static $regexBracket = '\([^()]+\)';
 
     /** @var ComplexNumber[] */
     private $numbers;
 
-    static function init()
+    private static $initialised = false;
+
+    /**
+     * NumberParser constructor.
+     */
+    public function __construct()
     {
-        self::$regexBinaryFormula = '^({\d+})(['. preg_quote(self::$binaryOperators, '#') .']({\d+}))*$';
+        if (!self::$initialised) {
+            self::init();
+        }
+    }
+
+    private static function init()
+    {
+        self::$regexFormula = '^({\d+})(['. preg_quote(self::$binaryOperators, '#') .']({\d+}))*$';
         self::$validSymbols = '\(\)0-9i\.' . self::$binaryOperators . self::$unaryOperators;
+        self::$initialised = true;
     }
 
     /**
@@ -45,9 +59,8 @@ class NumberParser
                     continue;
                 }
                 try {
-                    if ($this->validate($match)) {
-                        $results[] = new NumberResult($originalMatch, end($this->numbers));
-                    }
+                    $this->validate($match);
+                    $results[] = new NumberResult($originalMatch, end($this->numbers));
                 } catch (DivisionByZeroException $dbz) {
                     $results[] = new NumberResult($originalMatch, null, true);
                 } catch (\Throwable $t) {}
@@ -92,9 +105,7 @@ class NumberParser
         $formula = preg_replace('#^\(([^\)]+)\)$#', '\\1', $formula);
         while(preg_match_all('#('.self::$regexBracket.')#', $formula, $matches)) {
             foreach ($matches[1] as $index => $match) {
-                if (!self::validate($match)) {
-                    return false;
-                }
+                $this->validate($match);
                 $formula = preg_replace('#'.preg_quote($matches[0][$index], '#').'#', $match, $formula, 1);
             }
         }
@@ -103,26 +114,29 @@ class NumberParser
             while($this->resolveUnaryOperators($formula, $operator));
         }
 
-
-        if (!preg_match('#'.self::$regexBinaryFormula.'#', $formula)) {
-            return false;
+        if (!preg_match('#'.self::$regexFormula.'#', $formula)) {
+            throw new ParserException('string does not match formula regex: "'.$formula.'"');
         }
 
         foreach (str_split(self::$binaryOperators) as $operator) {
             while($this->resolveBinaryOperators($formula, $operator)) ;
         }
-
-        return true;
     }
 
     private function resolveBinaryOperators(&$formula, $operator)
     {
-        $formula = preg_replace_callback(
-            '#{(\d+)}(' . preg_quote($operator, '#') . '){(\d+)}#',
-            function ($match) {return $this->resolveBinaryOperator($match);},
-            $formula,
-            1,
-            $erfolg);
+        try {
+            $formula = preg_replace_callback(
+                '#{(\d+)}(' . preg_quote($operator, '#') . '){(\d+)}#',
+                function ($match) {return $this->resolveBinaryOperator($match);},
+                $formula,
+                1,
+                $erfolg);
+        } catch (DivisionByZeroException $dbz) {
+            throw $dbz;
+        } catch (\Throwable $t) {
+            throw new ParserException('failed to resolve binary operator "'.$operator.'"');
+        }
         return $erfolg;
     }
 
@@ -149,12 +163,16 @@ class NumberParser
 
     private function resolveUnaryOperators(&$formula, $operator)
     {
-        $formula = preg_replace_callback(
-            '#(?<!})(' . preg_quote($operator, '#') . '){(\d+)}#',
-            function ($match) {return $this->resolveUnaryOperator($match);},
-            $formula,
-            1,
-            $erfolg);
+        try {
+            $formula = preg_replace_callback(
+                '#(?<!})(' . preg_quote($operator, '#') . '){(\d+)}#',
+                function ($match) {return $this->resolveUnaryOperator($match);},
+                $formula,
+                1,
+                $erfolg);
+        } catch (\Throwable $t) {
+            throw new ParserException('failed to resolve unary operator "'.$operator.'"');
+        }
         return $erfolg;
     }
 

@@ -10,7 +10,6 @@ class NumberParserTest extends TestCase
 
     function setUp()
     {
-        NumberParser::init();
         $this->parser = new NumberParser();
         parent::setUp();
     }
