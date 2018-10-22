@@ -16,25 +16,29 @@ class NumberParser
     private static $regexFormula;
     private static $regexBracket = '\([^()]+\)';
 
+    private $replacements = ['#\s+#' => '', '#(\d)i#' => '$1*i'];
+
     /** @var ComplexNumber[] */
-    private $numbers;
+    private $numbers = [];
 
     private static $initialised = false;
 
     /**
      * NumberParser constructor.
      */
-    public function __construct()
+    public function __construct(string $decimalPoint = '.' , string $groupSeparator = ',')
     {
         if (!self::$initialised) {
             self::init();
         }
+        $this->replacements['#'.preg_quote($decimalPoint, '#').'#'] = '.';
+        $this->replacements['#'.preg_quote($groupSeparator, '#').'#'] = '';
     }
 
     private static function init()
     {
         self::$regexFormula = '^({\d+})(['. preg_quote(self::$binaryOperators, '#') .']({\d+}))*$';
-        self::$validSymbols = '\(\)0-9i\.' . self::$binaryOperators . self::$unaryOperators;
+        self::$validSymbols = '\s\(\)0-9i\.' . self::$binaryOperators . self::$unaryOperators;
         self::$initialised = true;
     }
 
@@ -45,8 +49,8 @@ class NumberParser
     function evaluateFulltext($string)
     {
         $string = preg_replace(
-            array('#\s+#', '#,#', '#\\xe3\\x97#', '#\\xe3\\xb7#', '#(\d)i#'),
-            array('', '.', '*', '/', '$1*i'),
+            array('#\\xe3\\x97#', '#\\xe3\\xb7#'),
+            array('*', '/'),
             $string
         );
         $results = [];
@@ -54,6 +58,9 @@ class NumberParser
             foreach ($matches[0] as $match) {
                 $this->numbers = [];
                 $originalMatch = $match;
+                foreach ($this->replacements as $needle => $replace) {
+                    $match = preg_replace($needle, $replace, $match);
+                }
                 $this->parseNumbers($match);
                 if (preg_match('#^[\(]*\{1\}[\)]*$#', $match)) {
                     continue;
@@ -68,6 +75,18 @@ class NumberParser
         }
 
         return $results;
+    }
+
+    function evaluate($string)
+    {
+        $this->numbers = [];
+        $originalString = $string;
+        foreach ($this->replacements as $needle => $replace) {
+            $string = preg_replace($needle, $replace, $string);
+        }
+        $this->parseNumbers($string);
+        $this->validate($string);
+        return new NumberResult($originalString, end($this->numbers));
     }
 
     private function parseNumbers(&$formula)

@@ -10,7 +10,7 @@ class NumberParserTest extends TestCase
 
     function setUp()
     {
-        $this->parser = new NumberParser();
+        $this->parser = new NumberParser(',', '?');
         parent::setUp();
     }
 
