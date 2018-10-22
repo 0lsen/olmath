@@ -19,6 +19,13 @@ use Math\Model\Vector\VectorInterface;
  * @method \Math\Model\Matrix\MatrixInterface set_(int $i, int $j, Number $number)
  * @method \Math\Model\Matrix\MatrixInterface setRow_(int $i, VectorInterface $vector)
  * @method \Math\Model\Matrix\MatrixInterface setCol_(int $i, VectorInterface $vector)
+ * @method \Math\Model\Matrix\MatrixInterface appendRow_(VectorInterface $vector)
+ * @method \Math\Model\Matrix\MatrixInterface appendCol_(VectorInterface $vector)
+ * @method \Math\Model\Matrix\MatrixInterface removeRow_(int $i)
+ * @method \Math\Model\Matrix\MatrixInterface removeCol_(int $i)
+ * @method \Math\Model\Matrix\MatrixInterface removeRows_(int ...$indices)
+ * @method \Math\Model\Matrix\MatrixInterface removeCols_(int ...$indices)
+ * @method \Math\Model\Matrix\MatrixInterface trim_(int $m, int $n)
  */
 abstract class AbstractMatrix extends MathConstruct implements MatrixInterface
 {
@@ -49,7 +56,7 @@ abstract class AbstractMatrix extends MathConstruct implements MatrixInterface
             ($checkCol && $vector->getDim() != $this->dimN) ||
             (!$checkCol && $vector->getDim() != $this->dimM)
         ) {
-            throw new DimensionException('matrix dimensions ('.$this->dimM.':'.$this->dimN.') and vector dimension ('.$vector->getDim().') do not match.');
+            throw new DimensionException('matrix dimensions ('.$this->dimM.','.$this->dimN.') and vector dimension ('.$vector->getDim().') do not match.');
         }
     }
 
@@ -61,7 +68,25 @@ abstract class AbstractMatrix extends MathConstruct implements MatrixInterface
     protected function checkDims(int $m, int $n)
     {
         if ($m > $this->dimM || $n > $this->dimN) {
-            throw new DimensionException('matrix entry indices '.$m.':'.$n.' out of range ('.($this->dimM-1).':'.($this->dimN-1).')');
+            throw new DimensionException('matrix entry indices ('.$m.','.$n.') out of range ('.($this->dimM-1).','.($this->dimN-1).')');
         }
+    }
+
+    public function removeRows(int ...$indices)
+    {
+        rsort($indices);
+        foreach ($indices as $i) {
+            $this->removeRow($i);
+        }
+        return $this;
+    }
+
+    public function removeCols(int ...$indices)
+    {
+        rsort($indices);
+        foreach ($indices as $i) {
+            $this->removeCol($i);
+        }
+        return $this;
     }
 }

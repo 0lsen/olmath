@@ -139,4 +139,80 @@ class Matrix extends AbstractMatrix
         }
         return $this;
     }
+
+    public function appendRow(VectorInterface $vector)
+    {
+        $this->checkVectorDim($vector);
+        for ($i = 0; $i < $this->dimN; $i++) {
+            $this->entries[] = $vector->get($i+1);
+        }
+        $this->dimM++;
+        return $this;
+    }
+
+    public function appendCol(VectorInterface $vector)
+    {
+        $this->checkVectorDim($vector, false);
+        for ($i = 0; $i < $this->dimM; $i++) {
+            array_splice($this->entries, ($i+1) *( $this->dimN+1) - 1, 0, [$vector->get($i+1)]);
+        }
+        $this->dimN++;
+        return $this;
+    }
+
+    public function removeRow(int $i)
+    {
+        if ($i < 1 || $i >= $this->dimM) {
+            throw new DimensionException('invalid row '.$i.' in ('.$this->dimM.','.$this->dimN.') matrix.');
+        }
+        array_splice($this->entries, ($i-1)*$this->dimN, $this->dimN);
+        $this->dimM--;
+        return $this;
+    }
+
+    public function removeCol(int $i)
+    {
+        if ($i < 1 || $i >= $this->dimN) {
+            throw new DimensionException('invalid col '.$i.' in ('.$this->dimM.','.$this->dimN.') matrix.');
+        }
+        for ($j = $this->dimM; $j > 0 ; $j--) {
+            array_splice($this->entries, ($j-1)*$this->dimN + ($i-1), 1);
+        }
+        $this->dimN--;
+        return $this;
+    }
+
+    public function trim(int $m, int $n = null)
+    {
+        if (is_null($m)) $m = $this->dimM;
+        if (is_null($n)) $n = $this->dimN;
+        if ($m < 1 || $n < 1) {
+            throw new DimensionException('can not trim matrix to dimensions ('.$m.','.$n.')');
+        }
+        if ($n != $this->dimN) {
+            $enlarge = $n > $this->dimN;
+            $diff = abs($this->dimN-$n);
+            for ($i = 0; $i < $this->dimM; $i++) {
+                array_splice(
+                    $this->entries,
+                    $enlarge ? ($i+1)*$n-1 : ($i+1)*$n,
+                    $enlarge ? 0 : $diff,
+                    $enlarge ? array_fill(0, $diff, Zero::getInstance()) : null
+                );
+            }
+        }
+        switch ($m <=> $this->dimM) {
+            case 0:
+                break;
+            case 1:
+                $this->entries = array_pad($this->entries, $m*$n, Zero::getInstance());
+                break;
+            case -1:
+                $this->entries = array_slice($this->entries, ($m-1)*$n);
+                break;
+        }
+        $this->dimM = $m;
+        $this->dimN = $n;
+        return $this;
+    }
 }

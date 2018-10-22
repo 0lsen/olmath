@@ -97,5 +97,63 @@ class MatrixTest extends TestCase
             ."[ 4 | 8 |       666 ]", (string) $this->matrix->setCol_(2, $vector));
     }
 
+    public function testAppendRow()
+    {
+        $vector = new Vector(
+            new RationalNumber(7),
+            Zero::getInstance(),
+            new RationalNumber(8)
+        );
+
+        $this->assertEquals(""
+            ."[ 1 | 1/2 | 2 - 1/4 i ]\n"
+            ."[ 4 |  -5 |       666 ]\n"
+            ."[ 7 |   0 |         8 ]", (string) $this->matrix->appendRow_($vector));
+    }
+
+    public function testAppendCol()
+    {
+        $vector = new Vector(
+            new RationalNumber(7),
+            new RationalNumber(8)
+        );
+
+        $this->assertEquals(""
+            ."[ 1 | 1/2 | 2 - 1/4 i | 7 ]\n"
+            ."[ 4 |  -5 |       666 | 8 ]", (string) $this->matrix->appendCol_($vector));
+    }
+
+    public function testRemoveRow()
+    {
+        $this->assertEquals(""
+            ."[ 4 | -5 | 666 ]", (string) $this->matrix->removeRow_(1));
+    }
+
+    public function testRemoveCol()
+    {
+        $this->assertEquals(""
+            ."[ 1 | 2 - 1/4 i ]\n"
+            ."[ 4 |       666 ]", (string) $this->matrix->removeCol_(2));
+    }
+
+    public function testTrim()
+    {
+        $this->assertEquals(""
+            ."[ 1 | 1/2 ]", (string) $this->matrix->trim_(1, 2));
+
+        $this->assertEquals(""
+            ."[ 1 | 1/2 | 2 - 1/4 i | 0 ]\n"
+            ."[ 4 |  -5 |       666 | 0 ]\n"
+            ."[ 0 |   0 |         0 | 0 ]", (string) $this->matrix->trim_(3, 4));
+
+        $this->assertEquals(""
+            ."[ 1 | 1/2 ]\n"
+            ."[ 4 |  -5 ]\n"
+            ."[ 0 |   0 ]", (string) $this->matrix->trim_(3, 2));
+
+        $this->assertEquals(""
+            ."[ 1 | 1/2 | 2 - 1/4 i | 0 ]", (string) $this->matrix->trim_(1, 4));
+    }
+
     //TODO: testDimensionExceptions()
 }

@@ -20,6 +20,10 @@ class SparseMatrix extends AbstractMatrix
 
     public function __construct(int $rows, int $cols, SingleElement ...$entries)
     {
+        if ($rows < 1 || $cols < 1) {
+            throw new DimensionException('invalid matrix size ('.$rows.','.$cols.')');
+        }
+
         $this->dimM = $rows;
         $this->dimN = $cols;
 
@@ -28,8 +32,9 @@ class SparseMatrix extends AbstractMatrix
                 throw new \Exception('SingleElement coordinates ('.($entry->getRow()+1).':'.($entry->getCol()+1).') are already occupied.');
             }
             if ($entry->getRow() >= $rows || $entry->getCol() >= $cols) {
-                throw new DimensionException('matrix element ('.($entry->getRow()+1).':'.($entry->getCol()+1).') is out of bounds ('.$this->dimM.':'.$this->dimN.').');
+                throw new DimensionException('matrix element ('.($entry->getRow()+1).','.($entry->getCol()+1).') is out of bounds ('.$this->dimM.','.$this->dimN.').');
             }
+            if ($entry->getNumber() instanceof Zero) continue;
             $this->entries[] = $entry->getNumber();
             $this->rowIndices[] = $entry->getRow();
             $this->colIndices[] = $entry->getCol();
@@ -41,7 +46,7 @@ class SparseMatrix extends AbstractMatrix
         if (!$this->entries) return "[ ]";
         $string = "";
         $longestEntries = array_fill(0, $this->dimN, 0);
-        for ($i = 0; $i < $this->dimM; $i++) {
+        for ($i = 0; $i < $this->dimN; $i++) {
             foreach (array_keys($this->colIndices, $i) as $index) {
                 $strLen = strlen((string) $this->entries[$index]) + strlen((string) ($i+1)) + strlen((string) ($this->rowIndices[$index]+1));
                 if ($longestEntries[$i] < $strLen)
@@ -166,10 +171,15 @@ class SparseMatrix extends AbstractMatrix
         $match = array_intersect(array_keys($this->rowIndices, $i), array_keys($this->colIndices, $j));
         if ($match) {
             $index = reset($match);
-            array_splice($this->rowIndices, $index, 1);
-            array_splice($this->colIndices, $index, 1);
-            array_splice($this->entries, $index, 1);
+            $this->removeEntry($index);
         }
+    }
+
+    private function removeEntry($index)
+    {
+        array_splice($this->rowIndices, $index, 1);
+        array_splice($this->colIndices, $index, 1);
+        array_splice($this->entries, $index, 1);
     }
 
     public function setRow(int $i, VectorInterface $vector)
@@ -197,6 +207,91 @@ class SparseMatrix extends AbstractMatrix
                 $this->set($j+1, $i, $entry);
             }
         }
+        return $this;
+    }
+
+    public function appendRow(VectorInterface $vector)
+    {
+        $this->checkVectorDim($vector);
+        for ($i = 0; $i < $this->dimN; $i++) {
+            $number = $vector->get($i+1);
+            if ($number->value()) {
+                $this->entries[] = $number;
+                $this->rowIndices[] = $this->dimM;
+                $this->colIndices[] = $i;
+            }
+        }
+        $this->dimM++;
+        return $this;
+    }
+
+    public function appendCol(VectorInterface $vector)
+    {
+        $this->checkVectorDim($vector, false);
+        for ($i = 0; $i < $this->dimM; $i++) {
+            $number = $vector->get($i+1);
+            if ($number->value()) {
+                $this->entries[] = $number;
+                $this->rowIndices[] = $i;
+                $this->colIndices[] = $this->dimN;
+            }
+        }
+        $this->dimN++;
+        return $this;
+    }
+
+    public function removeRow(int $i)
+    {
+        if ($i < 1 || $i >= $this->dimM) {
+            throw new DimensionException('invalid row '.$i.' in ('.$this->dimM.','.$this->dimN.') matrix.');
+        }
+        $indices = array_keys($this->rowIndices, $i-1);
+        foreach ($indices as $index) {
+            $this->removeEntry($index);
+        }
+        foreach ($this->rowIndices as &$index) {
+            if ($index >= $i)
+                $index--;
+        }
+        $this->dimM--;
+        return $this;
+    }
+
+    public function removeCol(int $i)
+    {
+        if ($i < 1 || $i >= $this->dimN) {
+            throw new DimensionException('invalid col '.$i.' in ('.$this->dimM.','.$this->dimN.') matrix.');
+        }
+        $indices = array_keys($this->colIndices, $i-1);
+        foreach ($indices as $index) {
+            $this->removeEntry($index);
+        }
+        foreach ($this->colIndices as &$index) {
+            if ($index >= $i)
+                $index--;
+        }
+        $this->dimN--;
+        return $this;
+    }
+
+    public function trim(int $m, int $n)
+    {
+        if ($m < $this->dimM) {
+            for ($i = sizeof($this->rowIndices); $i > 0; $i-- ) {
+                if ($this->rowIndices[$i-1] >= $m) {
+                    $this->removeEntry($i-1);
+                }
+            }
+        }
+        if ($n < $this->dimN) {
+            for ($i = sizeof($this->colIndices); $i > 0; $i-- ) {
+                if ($this->colIndices[$i-1]>= $n) {
+                    $this->removeEntry($i-1);
+                }
+            }
+        }
+        $this->dimM = $m;
+        $this->dimN = $n;
         return $this;
     }
 }

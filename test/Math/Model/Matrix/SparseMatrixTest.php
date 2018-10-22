@@ -19,14 +19,16 @@ class SparseMatrixTest extends TestCase
         $entry1x1 = new SparseInput\SingleElement(1, 1, new RationalNumber(1));
         $entry2x1 = new SparseInput\SingleElement(2, 1, new RationalNumber(5, 1, -1));
         $entry1x2 = new SparseInput\SingleElement(1, 2, new ComplexNumber(new RationalNumber(2), new RationalNumber(1,4,-1)));
+        $entry2x2 = new SparseInput\SingleElement(2, 2, Zero::getInstance());
         $entry1x3 = new SparseInput\SingleElement(1, 3, new RationalNumber(3));
-        $entry5x6 = new SparseInput\SingleElement(10, 5, new ComplexNumber(Zero::getInstance(), new RationalNumber(1)));
+        $entry10x5 = new SparseInput\SingleElement(10, 5, new ComplexNumber(Zero::getInstance(), new RationalNumber(1)));
         $this->matrix = new SparseMatrix(10, 6,
             $entry1x1,
             $entry2x1,
             $entry1x2,
+            $entry2x2,
             $entry1x3,
-            $entry5x6
+            $entry10x5
         );
         parent::setUp();
     }
@@ -129,6 +131,72 @@ class SparseMatrixTest extends TestCase
             ."[ 1,1:  1   1,2:  7   1,3: 3           ]\n"
             ."[ 2,1: -5                              ]\n"
             ."[           10,2: 8            10,5: i ]", (string) $this->matrix->setCol_(2, $vector));
+    }
+
+    public function testAppendRow()
+    {
+        $vector = new SparseVector(6, [
+            0 => new RationalNumber(6),
+            1 => new RationalNumber(0),
+            2 => Zero::getInstance(),
+            4 => new RationalNumber(7)
+        ]);
+
+        $this->assertEquals(""
+            ."[ 1,1:  1   1,2: 2 - 1/4 i   1,3: 3           ]\n"
+            ."[ 2,1: -5                                     ]\n"
+            ."[                                     10,5: i ]\n"
+            ."[ 11,1: 6                             11,5: 7 ]", (string) $this->matrix->appendRow_($vector));
+    }
+
+    public function testAppendCol()
+    {
+        $vector = new SparseVector(10, [
+            0 => new RationalNumber(6),
+            1 => new RationalNumber(0),
+            2 => Zero::getInstance(),
+            9 => new RationalNumber(7)
+        ]);
+
+        $this->assertEquals(""
+            ."[ 1,1:  1   1,2: 2 - 1/4 i   1,3: 3             1,7:  6 ]\n"
+            ."[ 2,1: -5                                               ]\n"
+            ."[                                     10,5: i   10,7: 7 ]", (string) $this->matrix->appendCol_($vector));
+    }
+
+    public function testRemoveRow()
+    {
+        $this->assertEquals(""
+            ."[ 1,1: 1   1,2: 2 - 1/4 i   1,3: 3          ]\n"
+            ."[                                    9,5: i ]", (string) $this->matrix->removeRow_(2));
+    }
+
+    public function testRemoveCol()
+    {
+        $this->assertEquals(""
+            ."[ 1,1:  1   1,2: 3           ]\n"
+            ."[ 2,1: -5                    ]\n"
+            ."[                    10,4: i ]", (string) $this->matrix->removeCol_(2));
+    }
+
+    public function testTrim()
+    {
+        $this->assertEquals(""
+            ."[ 1,1:  1   1,2: 2 - 1/4 i ]\n"
+            ."[ 2,1: -5                  ]", (string) $this->matrix->trim_(2, 2));
+
+        $this->assertEquals(""
+            ."[ 1,1:  1   1,2: 2 - 1/4 i   1,3: 3           ]\n"
+            ."[ 2,1: -5                                     ]\n"
+            ."[                                     10,5: i ]", (string) $this->matrix->trim_(20, 20));
+
+        $this->assertEquals(""
+            ."[ 1,1:  1   1,2: 2 - 1/4 i ]\n"
+            ."[ 2,1: -5                  ]", (string) $this->matrix->trim_(20, 2));
+
+        $this->assertEquals(""
+            ."[ 1,1:  1   1,2: 2 - 1/4 i   1,3: 3 ]\n"
+            ."[ 2,1: -5                           ]", (string) $this->matrix->trim_(2, 20));
     }
 
     //TODO: testDimensionExceptions()

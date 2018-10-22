@@ -16,6 +16,13 @@ use Math\Model\Vector\VectorInterface;
  * @method \Math\Model\Matrix\MatrixInterface set_(int $i, int $j, Number $number)
  * @method \Math\Model\Matrix\MatrixInterface setRow_(int $i, VectorInterface $vector)
  * @method \Math\Model\Matrix\MatrixInterface setCol_(int $i, VectorInterface $vector)
+ * @method \Math\Model\Matrix\MatrixInterface appendRow_(VectorInterface $vector)
+ * @method \Math\Model\Matrix\MatrixInterface appendCol_(VectorInterface $vector)
+ * @method \Math\Model\Matrix\MatrixInterface removeRow_(int $i)
+ * @method \Math\Model\Matrix\MatrixInterface removeCol_(int $i)
+ * @method \Math\Model\Matrix\MatrixInterface removeRows_(int ...$indices)
+ * @method \Math\Model\Matrix\MatrixInterface removeCols_(int ...$indices)
+ * @method \Math\Model\Matrix\MatrixInterface trim_(int $m, int $n)
  */
 interface MatrixInterface extends \Math\MathInterface
 {
@@ -88,7 +95,46 @@ interface MatrixInterface extends \Math\MathInterface
      */
     public function setCol(int $i, VectorInterface $vector);
 
-//TODO:    public function appendRow(VectorInterface $vector);
+    /**
+     * @param VectorInterface $vector
+     * @return MatrixInterface
+     */
+    public function appendRow(VectorInterface $vector);
 
-//TODO:    public function appendCol(VectorInterface $vector);
+    /**
+     * @param VectorInterface $vector
+     * @return MatrixInterface
+     */
+    public function appendCol(VectorInterface $vector);
+
+    /**
+     * @param int $i
+     * @return MatrixInterface
+     */
+    public function removeRow(int $i);
+
+    /**
+     * @param int $i
+     * @return MatrixInterface
+     */
+    public function removeCol(int $i);
+
+    /**
+     * @param int ...$indices
+     * @return MatrixInterface
+     */
+    public function removeRows(int ...$indices);
+
+    /**
+     * @param int ...$indices
+     * @return MatrixInterface
+     */
+    public function removeCols(int ...$indices);
+
+    /**
+     * @param int $m
+     * @param int $n
+     * @return MatrixInterface
+     */
+    public function trim(int $m, int $n);
 }
