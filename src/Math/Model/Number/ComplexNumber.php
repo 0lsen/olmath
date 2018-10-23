@@ -34,9 +34,13 @@ class ComplexNumber extends AbstractNumber
     private function setComponent(&$component, $number)
     {
         if (is_numeric($number)) {
-            $component = (int)$number == $number
-                ? new RationalNumber(abs($number), 1, $number <=> 0)
-                : new RealNumber($number);
+            if ($number == 0) {
+                $component = Zero::getInstance();
+            } else {
+                $component = (int)$number == $number
+                    ? new RationalNumber(abs($number), 1, $number <=> 0)
+                    : new RealNumber($number);
+            }
         } elseif ($number instanceof Number) {
             $component = $number;
         } else {

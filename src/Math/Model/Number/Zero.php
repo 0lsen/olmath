@@ -3,6 +3,8 @@
 namespace Math\Model\Number;
 
 
+use Math\Exception\DivisionByZeroException;
+
 class Zero extends AbstractNumber implements ComparableNumber
 {
     private static $instance;
@@ -56,6 +58,9 @@ class Zero extends AbstractNumber implements ComparableNumber
 
     public function divideBy(Number $number)
     {
+        if ($number->value() == 0) {
+            throw new DivisionByZeroException();
+        }
         return $this;
     }
 

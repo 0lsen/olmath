@@ -10,6 +10,7 @@ use Math\Functions\Denominator;
 /**
  * Class RationalNumber
  * @package Math\Number\Model
+ * @method \Math\Model\Number\Number reciprocal_()
  */
 class RationalNumber extends AbstractNumber implements ComparableNumber
 {
@@ -190,7 +191,7 @@ class RationalNumber extends AbstractNumber implements ComparableNumber
             }
             return $this;
         } else {
-            return (new RealNumber($this->value()))->multiplyWith($number);
+            return $number->multiplyWith_($this);
         }
     }
 
