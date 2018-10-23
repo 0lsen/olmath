@@ -5,6 +5,9 @@ namespace Math\Parser;
 use Math\Exception\DivisionByZeroException;
 use Math\Exception\ParserException;
 use Math\Model\Number\ComplexNumber;
+use Math\Model\Number\RationalNumber;
+use Math\Model\Number\RealNumber;
+use Math\Model\Number\Zero;
 
 class NumberParser
 {
@@ -94,7 +97,7 @@ class NumberParser
         preg_match_all('#' . self::$regexNumber . '#', $formula, $matches);
         foreach ($matches[1] as $index => $match) {
             if (strlen($match)) {
-                $number = $this->parseComplexNumber($match);
+                $number = $this->parseNumber($match);
                 $formula = preg_replace(
                     '#(?!{)' . preg_quote($matches[0][$index], '#') . '(?!})#',
                     '{' . $number . '}',
@@ -105,17 +108,22 @@ class NumberParser
         }
     }
 
-    private function parseComplexNumber($string)
+    private function parseNumber($string)
     {
-        $r = 0; $i = 0;
-        $neg = strpos($string, '-') === 0;
-        if (strpos($string, 'i') !== false) {
-            $str = substr($string, $neg ? 1 : 0, strlen($string) - ($neg ? 2 : 1));
-            $i = (strlen($str) ? $str : 1) + 0;
+        if ($string == 'i') {
+            $this->numbers[] = new ComplexNumber(0, 1);
+        } elseif (strpos($string, '.') !== false) {
+            $this->numbers[] = new RealNumber($string);
+        } elseif ($string == 0) {
+            $this->numbers[] = Zero::getInstance();
         } else {
-            $r = substr($string, $neg ? 1 : 0) + 0;
+            $this->numbers[] = new RationalNumber(
+                abs($string),
+                1,
+                $string <=> 0
+            );
         }
-        $this->numbers[] = new ComplexNumber($r, $i);
+
         return sizeof($this->numbers);
     }
 
