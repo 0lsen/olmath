@@ -9,9 +9,12 @@ use Math\Model\Number\Number;
 /**
  * Interface VectorInterface
  * @method \Math\Model\Vector\VectorInterface multiplyWithScalar_(\Math\Model\Number\Number $number)
- * @method \Math\Model\Vector\VectorInterface addVector_(\Math\Model\Vector\VectorInterface $number)
+ * @method \Math\Model\Vector\VectorInterface addVector_(\Math\Model\Vector\VectorInterface $vector)
  * @method \Math\Model\Number\Number get_(int $i)
- * @method \Math\Model\Vector\VectorInterface set_(int $i, Number $number)
+ * @method \Math\Model\Vector\VectorInterface set_(int $i, \Math\Model\Number\Number $number)
+ * @method \Math\Model\Vector\VectorInterface appendNumber_(\Math\Model\Number\Number $number)
+ * @method \Math\Model\Vector\VectorInterface appendVector_(\Math\Model\Vector\VectorInterface $vector)
+ * @method \Math\Model\Vector\VectorInterface normalise_()
  */
 interface VectorInterface extends MathInterface
 {
@@ -66,4 +69,9 @@ interface VectorInterface extends MathInterface
      * @return VectorInterface
      */
     public function appendVector(VectorInterface $vector);
+
+    /**
+     * @return VectorInterface
+     */
+    public function normalise();
 }

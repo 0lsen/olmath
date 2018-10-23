@@ -10,9 +10,12 @@ use Math\Model\Number\Zero;
 /**
  * Class AbstractVector
  * @method \Math\Model\Vector\VectorInterface multiplyWithScalar_(\Math\Model\Number\Number $number)
- * @method \Math\Model\Vector\VectorInterface addVector_(\Math\Model\Vector\VectorInterface $number)
+ * @method \Math\Model\Vector\VectorInterface addVector_(\Math\Model\Vector\VectorInterface $vector)
  * @method \Math\Model\Number\Number get_(int $i)
- * @method \Math\Model\Vector\VectorInterface set_(int $i, Number $number)
+ * @method \Math\Model\Vector\VectorInterface set_(int $i, \Math\Model\Number\Number $number)
+ * @method \Math\Model\Vector\VectorInterface appendNumber_(\Math\Model\Number\Number $number)
+ * @method \Math\Model\Vector\VectorInterface appendVector_(\Math\Model\Vector\VectorInterface $vector)
+ * @method \Math\Model\Vector\VectorInterface normalise_()
  */
 abstract class AbstractVector extends MathConstruct implements VectorInterface
 {
@@ -74,5 +77,14 @@ abstract class AbstractVector extends MathConstruct implements VectorInterface
         if ($i > $this->dim) {
             throw new DimensionException('vector entry index '.$i.' is out of range ('.$this->dim.')');
         }
+    }
+
+    public function normalise()
+    {
+        $norm = $this->norm();
+        foreach ($this->entries as &$entry) {
+            $entry = $entry->divideBy($norm);
+        }
+        return $this;
     }
 }
