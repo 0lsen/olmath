@@ -9,7 +9,6 @@ use Math\Model\Vector\VectorInterface;
  * Interface MatrixInterface
  * @method \Math\Model\Matrix\MatrixInterface transpose_()
  * @method \Math\Model\Matrix\MatrixInterface multiplyWithScalar_(Number $number)
- * @method \Math\Model\Vector\VectorInterface multiplyWithVector_(VectorInterface $vector)
  * @method \Math\Model\Number\Number get_(int $i, int $j)
  * @method \Math\Model\Vector\VectorInterface getRow_(int $i)
  * @method \Math\Model\Vector\VectorInterface getCol_(int $i)
@@ -43,7 +42,7 @@ interface MatrixInterface extends \Math\MathInterface
      * @param bool $transposed
      * @return VectorInterface
      */
-    public function multiplyWithVector(VectorInterface $vector);
+    public function multiplyWithVector(VectorInterface $vector, bool $transposed = false);
 
     /**
      * @return int[]

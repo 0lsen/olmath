@@ -87,8 +87,8 @@ class SparseMatrix extends AbstractMatrix
     public function transpose()
     {
         $dimM = $this->dimM;
-        $this->dimN = $this->dimM;
-        $this->dimM = $dimM;
+        $this->dimM = $this->dimN;
+        $this->dimN = $dimM;
 
         $rowIndices = $this->rowIndices;
         $this->rowIndices = $this->colIndices;
@@ -109,15 +109,15 @@ class SparseMatrix extends AbstractMatrix
         return $this;
     }
 
-    public function multiplyWithVector(VectorInterface $vector)
+    public function multiplyWithVector(VectorInterface $vector, bool $transposed = false)
     {
-        $this->checkVectorDim($vector);
+        $this->checkVectorDim($vector, !$transposed);
         $result = [];
-        for ($i = 0; $i < $this->dimM; $i++) {
+        for ($i = 0; $i < ($transposed ? $this->dimN : $this->dimM); $i++) {
             $sum = Zero::getInstance();
-            $rowElements = array_keys($this->rowIndices, $i);
+            $rowElements = array_keys($transposed ? $this->colIndices : $this->rowIndices, $i);
             foreach ($rowElements as $j) {
-                $sum = $sum->add($vector->get($this->colIndices[$j]+1)->multiplyWith_($this->entries[$j]));
+                $sum = $sum->add($vector->get($transposed ? $this->rowIndices[$j]+1 : $this->colIndices[$j]+1)->multiplyWith_($this->entries[$j]));
             }
             $result[] = $sum;
         }

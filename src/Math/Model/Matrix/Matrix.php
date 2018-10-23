@@ -59,9 +59,9 @@ class Matrix extends AbstractMatrix
         }
         $this->entries = $newEntries;
 
-        $dimM = $this->dimN;
-        $this->dimN = $this->dimM;
-        $this->dimM = $dimM;
+        $dimM = $this->dimM;
+        $this->dimM = $this->dimN;
+        $this->dimN = $dimM;
 
         return $this;
     }
@@ -76,9 +76,9 @@ class Matrix extends AbstractMatrix
         return $this;
     }
 
-    public function multiplyWithVector(VectorInterface $vector)
+    public function multiplyWithVector(VectorInterface $vector, bool $transposed = false)
     {
-        $this->checkVectorDim($vector);
+        $this->checkVectorDim($vector, !$transposed);
         $result = [];
         for ($i = 0; $i < $this->dimM; $i++) {
             $sum = Zero::getInstance();

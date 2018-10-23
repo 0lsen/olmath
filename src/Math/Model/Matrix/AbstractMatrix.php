@@ -12,7 +12,6 @@ use Math\Model\Vector\VectorInterface;
  * Class AbstractMatrix
  * @method \Math\Model\Matrix\MatrixInterface transpose_()
  * @method \Math\Model\Matrix\MatrixInterface multiplyWithScalar_(Number $number)
- * @method \Math\Model\Vector\VectorInterface multiplyWithVector_(VectorInterface $vector)
  * @method \Math\Model\Number\Number get_(int $i, int $j)
  * @method \Math\Model\Vector\VectorInterface getRow_(int $i)
  * @method \Math\Model\Vector\VectorInterface getCol_(int $i)

@@ -53,7 +53,7 @@ class MatrixTest extends TestCase
             Zero::getInstance()
         );
 
-        $product = $this->matrix->multiplyWithVector_($vector);
+        $product = $this->matrix->multiplyWithVector($vector);
 
         $this->assertEquals(2, $product->getDim());
         $this->assertEquals(2, $product->get(1)->value());
