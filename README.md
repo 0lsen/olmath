@@ -47,6 +47,10 @@ Essential to numeric stuff. So far sparse operations even seem quite elegant.
 _(
 As mentioned doing certain things should be avoided. So they aren't implemented in the first place.
 )_
+
+###### Numeric Algorithms:
+
+- LSQR/LSMR as a start \o/
  
 ###### Parse stuff:
 
@@ -56,9 +60,9 @@ As mentioned doing certain things should be avoided. So they aren't implemented 
 
 ##### soon™
 
-- Matrix/vector operations that seem necessary at the moment.
+- Matrix/vector operations that seem necessary at the moment _(e.g. vector subtraction)_
 - Parser for matrix/vector expressions.
-- Some numeric algorithms, finally?
+- Reasonable set of numeric algorithms
 
 ##### later
 
