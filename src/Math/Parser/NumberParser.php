@@ -41,7 +41,7 @@ class NumberParser
     private static function init()
     {
         self::$regexFormula = '^({\d+})(['. preg_quote(self::$binaryOperators, '#') .']({\d+}))*$';
-        self::$validSymbols = '\s\(\)0-9i\.' . self::$binaryOperators . self::$unaryOperators;
+        self::$validSymbols = '\(\)0-9i\.' . self::$binaryOperators . self::$unaryOperators;
         self::$initialised = true;
     }
 
@@ -57,7 +57,7 @@ class NumberParser
             $string
         );
         $results = [];
-        if (preg_match_all('#['.self::$validSymbols.'][ '.self::$validSymbols.']+['.self::$validSymbols.']#', $string, $matches)) {
+        if (preg_match_all('#['.self::$validSymbols.'][\s'.self::$validSymbols.']+['.self::$validSymbols.']#', $string, $matches)) {
             foreach ($matches[0] as $match) {
                 $this->numbers = [];
                 $originalMatch = $match;

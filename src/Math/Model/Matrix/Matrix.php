@@ -80,10 +80,10 @@ class Matrix extends AbstractMatrix
     {
         $this->checkVectorDim($vector, !$transposed);
         $result = [];
-        for ($i = 0; $i < $this->dimM; $i++) {
+        for ($i = 0; $i < ($transposed ? $this->dimN : $this->dimM); $i++) {
             $sum = Zero::getInstance();
-            for ($j = 0; $j < $this->dimN; $j++) {
-                $sum = $sum->add($vector->get($j+1)->multiplyWith_($this->entries[$i*$this->dimN + $j]));
+            for ($j = 0; $j < ($transposed ? $this->dimM : $this->dimN); $j++) {
+                $sum = $sum->add($vector->get($j+1)->multiplyWith_($this->entries[$transposed ? $j*$this->dimN + $i : $i*$this->dimN + $j]));
             }
             $result[] = $sum;
         }

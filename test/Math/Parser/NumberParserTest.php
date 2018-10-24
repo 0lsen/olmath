@@ -134,4 +134,11 @@ class NumberParserTest extends TestCase
         $results = $this->parser->evaluateFulltext($string);
         $this->assertEquals('-4', (string) $results[0]->getResult());
     }
+
+    function testOriginalString()
+    {
+        $string = 'foo 1 +1 bar';
+        $results = $this->parser->evaluateFulltext($string);
+        $this->assertEquals('1 +1', $results[0]->getOriginal());
+    }
 }

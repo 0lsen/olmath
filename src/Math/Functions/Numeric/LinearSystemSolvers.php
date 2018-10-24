@@ -44,8 +44,8 @@ class LinearSystemSolvers
         }
 
         if (is_null($maxIt)) $maxIt = 100;
-        if (is_null($atol)) $atol = new RationalNumber(1, 1000000, 1);
-        if (is_null($btol)) $btol = new RationalNumber(1, 1000000, 1);
+        if (is_null($atol)) $atol = new RationalNumber(1, 100000000, 1);
+        if (is_null($btol)) $btol = new RationalNumber(1, 100000000, 1);
 
         if (!is_null($lambda)) $rd = Zero::getInstance();
 
@@ -53,7 +53,7 @@ class LinearSystemSolvers
         $x = new SparseVector($n);
 
         $beta = $b->norm();
-        $u = $b->normalise();
+        $u = $b->normalise_();
         $bNorm = clone $beta;
 
         $v = $A->multiplyWithVector($u, true);
@@ -113,14 +113,14 @@ class LinearSystemSolvers
             $thetaBar = $sBar->negative_()->multiplyWith($rho);
             $rhoBar = $cBar->multiplyWith_($rho)->square()->add($theta->square_())->squareRoot();
             $cBar = $cBar->multiplyWith($rho->divideBy_($rhoBar));
-            $sBar = $theta->multiplyWith_($rhoBar)->negative();
+            $sBar = $theta->negative_()->divideBy($rhoBar);
 
             $zeta = $cBar->multiplyWith_($zetaBar);
             $zetaBar = $zetaBar->multiplyWith($sBar);
 
-            $hBar = $h->addVector_($hBar->multiplyWithScalar($thetaBar->multiplyWith_($rho)->divideBy($rhoOld->multiplyWith_($rhoOldBar))));
+            $hBar = $h->addVector_($hBar->multiplyWithScalar($thetaBar->multiplyWith_($rho)->negative()->divideBy($rhoOld->multiplyWith_($rhoOldBar))));
             $x = $x->addVector($hBar->multiplyWithScalar_($zeta->divideBy_($rho->multiplyWith_($rhoBar))));
-            $h = $v->addVector_($h->multiplyWithScalar_($theta->divideBy_($rho)));
+            $h = $v->addVector_($h->multiplyWithScalar_($theta->negative_()->divideBy($rho)));
 
             if (is_null($lambda)) {
                 $betaHat = $c->multiplyWith_($betaDoubleDot);
@@ -130,7 +130,6 @@ class LinearSystemSolvers
                 $betaHat = $c->multiplyWith_($cHat)->multiplyWith($betaDoubleDot);
                 $betaDoubleDot = $betaDoubleDot->multiplyWith($s)->multiplyWith($cHat);
             }
-
 
             $rhoTilde = $rhoDot->normSquared()->add($thetaBar->normSquared())->squareRoot();
             $cTilde = $rhoDot->divideBy_($rhoTilde);
