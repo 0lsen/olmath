@@ -169,7 +169,7 @@ class RationalNumber extends AbstractNumber implements ComparableNumber
             }
             return $this;
         } else {
-            return (new RealNumber($this->value()))->add($number);
+            return $number->add_($this);
         }
     }
 

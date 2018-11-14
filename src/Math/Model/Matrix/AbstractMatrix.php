@@ -12,6 +12,7 @@ use Math\Model\Vector\VectorInterface;
  * Class AbstractMatrix
  * @method \Math\Model\Matrix\MatrixInterface transpose_()
  * @method \Math\Model\Matrix\MatrixInterface multiplyWithScalar_(Number $number)
+ * @method \Math\Model\Matrix\MatrixInterface addMatrix_(MatrixInterface $matrix)
  * @method \Math\Model\Number\Number get_(int $i, int $j)
  * @method \Math\Model\Vector\VectorInterface getRow_(int $i)
  * @method \Math\Model\Vector\VectorInterface getCol_(int $i)
@@ -56,6 +57,14 @@ abstract class AbstractMatrix extends MathConstruct implements MatrixInterface
             (!$checkCol && $vector->getDim() != $this->dimM)
         ) {
             throw new DimensionException('matrix dimensions ('.$this->dimM.','.$this->dimN.') and vector dimension ('.$vector->getDim().') do not match.');
+        }
+    }
+
+    protected function checkMatrixDims(MatrixInterface $matrix)
+    {
+        list($m, $n) = $matrix->getDims();
+        if ($this->dimM != $m || $this->dimN != $n) {
+            throw new DimensionException('matrix dimensions do not match - adding ('.$m.','.$n.') to ('.$this->dimM.','.$this->dimN.').');
         }
     }
 

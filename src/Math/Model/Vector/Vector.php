@@ -8,7 +8,7 @@ use Math\Model\Number\Zero;
 
 class Vector extends AbstractVector
 {
-    public function __construct(...$entries)
+    public function __construct(Number ...$entries)
     {
         foreach ($entries as $entry) {
             $this->entries[] = $entry;

@@ -28,7 +28,7 @@ class SparseMatrix extends AbstractMatrix
         $this->dimN = $cols;
 
         foreach ($entries as $entry) {
-            if ($this->entryAlreadyExists($entry)) {
+            if (!is_null($this->getEntryIndex($entry->getRow(), $entry->getCol()))) {
                 throw new \Exception('SingleElement coordinates ('.($entry->getRow()+1).':'.($entry->getCol()+1).') are already occupied.');
             }
             if ($entry->getRow() >= $rows || $entry->getCol() >= $cols) {
@@ -48,9 +48,11 @@ class SparseMatrix extends AbstractMatrix
         $longestEntries = array_fill(0, $this->dimN, 0);
         for ($i = 0; $i < $this->dimN; $i++) {
             foreach (array_keys($this->colIndices, $i) as $index) {
-                $strLen = strlen((string) $this->entries[$index]) + strlen((string) ($i+1)) + strlen((string) ($this->rowIndices[$index]+1));
-                if ($longestEntries[$i] < $strLen)
-                    $longestEntries[$i] = $strLen;
+                if ($this->entries[$index]->value()) {
+                    $strLen = strlen((string) $this->entries[$index]) + strlen((string) ($i+1)) + strlen((string) ($this->rowIndices[$index]+1));
+                    if ($longestEntries[$i] < $strLen)
+                        $longestEntries[$i] = $strLen;
+                }
             }
         }
         for ($i = 0; $i < $this->dimM; $i++) {
@@ -60,28 +62,20 @@ class SparseMatrix extends AbstractMatrix
             for ($j = 0; $j < $this->dimN; $j++) {
                 if (!$longestEntries[$j]) continue;
                 if ($j) $string .= "   ";
-                $match = array_intersect(array_keys($this->rowIndices, $i), array_keys($this->colIndices, $j));
-                if ($match) {
-                    $str = (string) $this->entries[reset($match)];
+                $entry = $this->getEntryIndex($i, $j);
+                if (is_null($entry) || !$this->entries[$entry]->value()) {
+                    $string .= str_repeat(" ", $longestEntries[$j]+3);
+                } else {
+                    $str = (string) $this->entries[$entry];
                     $spaces = $longestEntries[$j]-strlen($str)-strlen((string) ($i+1))-strlen((string) ($j+1));
                     $string .= ($i+1) . "," . ($j+1) . ": ";
                     if ($spaces) $string .= str_repeat(" ", $spaces);
                     $string .= $str;
-                } else {
-                    $string .= str_repeat(" ", $longestEntries[$j]+3);
                 }
             }
             $string .= " ]";
         }
         return $string;
-    }
-
-
-    private function entryAlreadyExists(SingleElement $entry)
-    {
-        $rowMatches = array_keys($this->rowIndices, $entry->getRow());
-        $colMatches = array_keys($this->colIndices, $entry->getCol());
-        return sizeof(array_intersect($rowMatches, $colMatches)) > 0;
     }
 
     public function transpose()
@@ -125,13 +119,41 @@ class SparseMatrix extends AbstractMatrix
         return new Vector(...$result);
     }
 
+    public function addMatrix(MatrixInterface $matrix)
+    {
+        $this->checkMatrixDims($matrix);
+        for ($i = 1; $i <= $this->dimM; $i++) {
+            for ($j = 1; $j <= $this->dimN; $j++) {
+                $toAdd = $matrix->get_($i, $j);
+                if ($toAdd->value() != 0) {
+                    $current = $this->getEntryIndex($i-1, $j-1);
+                    if (is_null($current)) {
+                        $this->rowIndices[] = $i-1;
+                        $this->colIndices[] = $j-1;
+                        $this->entries[] = $toAdd;
+                    } else {
+                        $this->entries[$current] = $this->entries[$current]->add($toAdd);
+                    }
+                }
+            }
+        }
+        return $this;
+    }
+
     public function get(int $i, int $j)
     {
         $this->checkDims($i, $j);
-        $rowMatches = array_keys($this->rowIndices, $i);
-        $colMatches = array_keys($this->colIndices, $j);
-        $match = array_intersect($rowMatches, $colMatches);
-        return $match ? $this->entries[reset($match)] : Zero::getInstance();
+        $entry = $this->getEntryIndex($i-1, $j-1);
+        return is_null($entry) ? Zero::getInstance() : $this->entries[$entry];
+    }
+
+    private function getEntryIndex(int $i, int $j)
+    {
+        $match = array_intersect(
+            array_keys($this->rowIndices, $i),
+            array_keys($this->colIndices, $j)
+        );
+        return $match ? reset($match) : null;
     }
 
     public function getRow(int $i)
@@ -155,23 +177,22 @@ class SparseMatrix extends AbstractMatrix
     public function set(int $i, int $j, Number $number)
     {
         $this->checkDims($i, $j);
-        $match = array_intersect(array_keys($this->rowIndices, --$i), array_keys($this->colIndices, --$j));
-        if ($match) {
-            $this->entries[reset($match)] = $number;
-        } else {
+        $entry = $this->getEntryIndex(--$i, --$j);
+        if (is_null($entry)) {
             $this->rowIndices[] = $i;
             $this->colIndices[] = $j;
             $this->entries[] = $number;
+        } else {
+            $this->entries[$entry] = $number;
         }
         return $this;
     }
 
     private function unset(int $i, int $j)
     {
-        $match = array_intersect(array_keys($this->rowIndices, $i), array_keys($this->colIndices, $j));
-        if ($match) {
-            $index = reset($match);
-            $this->removeEntry($index);
+        $entry = $this->getEntryIndex($i, $j);
+        if (!is_null($entry)) {
+            $this->removeEntry($entry);
         }
     }
 

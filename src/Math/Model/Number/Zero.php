@@ -16,6 +16,7 @@ class Zero extends AbstractNumber implements ComparableNumber
         }
         return self::$instance;
     }
+
     public function __toString()
     {
         return '0';

@@ -11,7 +11,7 @@ use Math\Model\Vector\VectorInterface;
 
 class Matrix extends AbstractMatrix
 {
-    public function __construct(...$rows)
+    public function __construct(array ...$rows)
     {
         $this->dimM = sizeof($rows);
         $this->dimN = sizeof($rows[0]);
@@ -89,6 +89,15 @@ class Matrix extends AbstractMatrix
         }
 
         return new Vector(...$result);
+    }
+
+    public function addMatrix(MatrixInterface $matrix)
+    {
+        $this->checkMatrixDims($matrix);
+        foreach ($this->entries as $index => &$entry) {
+            $entry = $entry->add($matrix->get(floor($index/$this->dimN)+1, $index%$this->dimN+1));
+        }
+        return $this;
     }
 
     public function get(int $i, int $j)

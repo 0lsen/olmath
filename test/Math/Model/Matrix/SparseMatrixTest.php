@@ -83,6 +83,24 @@ class SparseMatrixTest extends TestCase
         $this->assertEquals(5, $product->get(10)->getI()->value());
     }
 
+    public function testAddMatrix()
+    {
+        $matrix = new SparseMatrix(10, 6,
+            new SparseInput\SingleElement(1, 1, new RationalNumber(1)),
+            new SparseInput\SingleElement(1, 2, new RationalNumber(2)),
+            new SparseInput\SingleElement(1, 3, new RationalNumber(3, 1, -1)),
+            new SparseInput\SingleElement(2, 1, new RationalNumber(5)),
+            new SparseInput\SingleElement(2, 2, new RationalNumber(4)),
+            new SparseInput\SingleElement(3, 2, new RationalNumber(6)),
+            new SparseInput\SingleElement(10, 5, new RationalNumber(1))
+        );
+        $this->assertEquals(""
+            ."[ 1,1: 2   1,2: 4 - 1/4 i               ]\n"
+            ."[          2,2:         4               ]\n"
+            ."[          3,2:         6               ]\n"
+            ."[                           10,5: 1 + i ]", (string) $this->matrix->addMatrix_($matrix));
+    }
+
     public function testGetRow()
     {
         $row = $this->matrix->getRow_(1);

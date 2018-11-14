@@ -60,6 +60,17 @@ class MatrixTest extends TestCase
         $this->assertEquals(-6, $product->get(2)->value());
     }
 
+    public function testAddMatrix()
+    {
+        $matrix = new Matrix(
+            [new RationalNumber(1), Zero::getInstance(), new RationalNumber(3)],
+            [new RationalNumber(4), new RationalNumber(5), new RationalNumber(6)]
+        );
+        $this->assertEquals(""
+            ."[ 2 | 1/2 | 5 - 1/4 i ]\n"
+            ."[ 8 |   0 |       672 ]", (string) $this->matrix->addMatrix_($matrix));
+    }
+
     public function testGetRow()
     {
         $row = $this->matrix->getRow_(2);
