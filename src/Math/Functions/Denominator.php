@@ -19,10 +19,9 @@ class Denominator
     public static function LCM(int $a, int $b) {
         if (!$a && !$b) {
             return 0;
-        }else {
+        } else {
             return self::shortLCM($a, $b);
         }
-
     }
 
     private static function shortLCM(int $a, int $b) {

@@ -1,10 +1,10 @@
 <?php
 
-namespace Math\Functions;
+namespace Math\Functions\Number;
 
 use Math\Exception\UnknownOperandException;
 
-class CalcUtil
+class Root
 {
     // TODO: use relative accuarcy
     public static $decimalPlacesAccuracy = 8;

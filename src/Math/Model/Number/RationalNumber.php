@@ -4,8 +4,8 @@ namespace Math\Model\Number;
 
 use Math\Exception\DivisionByZeroException;
 use Math\Exception\UnknownOperandException;
-use Math\Functions\CalcUtil;
 use Math\Functions\Denominator;
+use Math\Functions\Number\Root;
 
 /**
  * Class RationalNumber
@@ -222,8 +222,8 @@ class RationalNumber extends AbstractNumber implements ComparableNumber
     public function root($nth)
     {
         if ($this->s) {
-            $n = CalcUtil::nthRoot($this->n, $nth);
-            $d = CalcUtil::nthRoot($this->d, $nth);
+            $n = Root::nthRoot($this->n, $nth);
+            $d = Root::nthRoot($this->d, $nth);
             if ($this->canBeCastToInt($n) && $this->canBeCastToInt($d)) {
                 $this->n = round($n, 0);
                 $this->d = round($d, 0);

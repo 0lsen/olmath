@@ -4,7 +4,7 @@ namespace Math\Model\Number;
 
 use Math\Exception\DivisionByZeroException;
 use Math\Exception\UnknownOperandException;
-use Math\Functions\CalcUtil;
+use Math\Functions\Number\Root;
 
 class RealNumber extends AbstractNumber implements ComparableNumber
 {
@@ -121,7 +121,7 @@ class RealNumber extends AbstractNumber implements ComparableNumber
 
     public function root($nth)
     {
-        $this->r = CalcUtil::nthRoot($this->r, $nth);
+        $this->r = Root::nthRoot($this->r, $nth);
         return $this;
     }
 
