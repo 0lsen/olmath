@@ -125,7 +125,7 @@ class SparseMatrix extends AbstractMatrix
         for ($i = 1; $i <= $this->dimM; $i++) {
             for ($j = 1; $j <= $this->dimN; $j++) {
                 $toAdd = $matrix->get_($i, $j);
-                if ($toAdd->value() != 0) {
+                if ($toAdd->value()) {
                     $current = $this->getEntryIndex($i-1, $j-1);
                     if (is_null($current)) {
                         $this->rowIndices[] = $i-1;
@@ -177,13 +177,17 @@ class SparseMatrix extends AbstractMatrix
     public function set(int $i, int $j, Number $number)
     {
         $this->checkDims($i, $j);
-        $entry = $this->getEntryIndex(--$i, --$j);
-        if (is_null($entry)) {
-            $this->rowIndices[] = $i;
-            $this->colIndices[] = $j;
-            $this->entries[] = $number;
+        if ($number->value()) {
+            $entry = $this->getEntryIndex(--$i, --$j);
+            if (is_null($entry)) {
+                $this->rowIndices[] = $i;
+                $this->colIndices[] = $j;
+                $this->entries[] = $number;
+            } else {
+                $this->entries[$entry] = $number;
+            }
         } else {
-            $this->entries[$entry] = $number;
+            $this->unset($i, $j);
         }
         return $this;
     }
@@ -206,13 +210,8 @@ class SparseMatrix extends AbstractMatrix
     public function setRow(int $i, VectorInterface $vector)
     {
         $this->checkVectorDim($vector);
-        for ($j = 0; $j < $this->dimN; $j++) {
-            $entry = $vector->get($j+1);
-            if ($entry->value() == 0) {
-                $this->unset($i, $j+1);
-            } else {
-                $this->set($i, $j+1, $entry);
-            }
+        foreach ($vector as $j => $number) {
+            $this->set($i, $j+1, $number);
         }
         return $this;
     }
@@ -220,13 +219,8 @@ class SparseMatrix extends AbstractMatrix
     public function setCol(int $i, VectorInterface $vector)
     {
         $this->checkVectorDim($vector, false);
-        for ($j = 0; $j < $this->dimM; $j++) {
-            $entry = $vector->get($j+1);
-            if ($entry->value() == 0) {
-                $this->unset($j+1, $i);
-            } else {
-                $this->set($j+1, $i, $entry);
-            }
+        foreach ($vector as $j => $number) {
+            $this->set($j+1, $i, $number);
         }
         return $this;
     }
@@ -234,8 +228,7 @@ class SparseMatrix extends AbstractMatrix
     public function appendRow(VectorInterface $vector)
     {
         $this->checkVectorDim($vector);
-        for ($i = 0; $i < $this->dimN; $i++) {
-            $number = $vector->get($i+1);
+        foreach ($vector as $i => $number) {
             if ($number->value()) {
                 $this->entries[] = $number;
                 $this->rowIndices[] = $this->dimM;
@@ -249,8 +242,7 @@ class SparseMatrix extends AbstractMatrix
     public function appendCol(VectorInterface $vector)
     {
         $this->checkVectorDim($vector, false);
-        for ($i = 0; $i < $this->dimM; $i++) {
-            $number = $vector->get($i+1);
+        foreach ($vector as $i => $number) {
             if ($number->value()) {
                 $this->entries[] = $number;
                 $this->rowIndices[] = $i;

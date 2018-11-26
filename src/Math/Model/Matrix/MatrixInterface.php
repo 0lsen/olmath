@@ -29,6 +29,13 @@ interface MatrixInterface extends \Math\MathInterface
     public function __toString();
 
     /**
+     * @param int $i
+     * @param int $j
+     * @return Number
+     */
+    public function __invoke(int $i, int $j);
+
+    /**
      * @return MatrixInterface
      */
     public function transpose();

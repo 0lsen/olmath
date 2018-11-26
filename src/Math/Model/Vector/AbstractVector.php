@@ -31,6 +31,11 @@ abstract class AbstractVector extends MathConstruct implements VectorInterface
         }
     }
 
+    public function __invoke(int $i)
+    {
+        return $this->get($i);
+    }
+
     public function getDim()
     {
         return $this->dim;
@@ -86,5 +91,34 @@ abstract class AbstractVector extends MathConstruct implements VectorInterface
             $entry = $entry->divideBy($norm);
         }
         return $this;
+    }
+
+    // Iterator Functions
+
+    protected $iteratorPosition = 0;
+
+    public function current()
+    {
+        return $this->get($this->iteratorPosition+1);
+    }
+
+    public function next()
+    {
+        $this->iteratorPosition++;
+    }
+
+    public function key()
+    {
+        return $this->iteratorPosition;
+    }
+
+    public function valid()
+    {
+        return $this->iteratorPosition < $this->dim && $this->iteratorPosition >= 0;
+    }
+
+    public function rewind()
+    {
+        $this->iteratorPosition = 0;
     }
 }

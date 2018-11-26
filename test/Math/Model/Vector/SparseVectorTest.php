@@ -19,6 +19,21 @@ class SparseVectorTest extends TestCase
 
         $this->assertEquals("[ 2: 1.2 ; 5: -3.4 ]", (string) $vector);
     }
+
+    public function testInvoke()
+    {
+        $one = new RationalNumber(1);
+        $two = new RationalNumber(2);
+        $vector = new SparseVector(5, [
+            0 => $one,
+            1 => $two,
+        ]);
+
+        $this->assertSame($one, $vector(1));
+        $this->assertSame($two, $vector(2));
+        $this->assertSame(Zero::getInstance(), $vector(3));
+    }
+
     public function testNorm()
     {
         $vector = new SparseVector(5, [
@@ -135,5 +150,6 @@ class SparseVectorTest extends TestCase
     //TODO: testSet()
     //TODO: testAppendNumber()
     //TODO: testAppendVector()
+    //TODO: testNormalise()
     //TODO: testDimensionExceptions()
 }

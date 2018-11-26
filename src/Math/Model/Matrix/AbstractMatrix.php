@@ -43,6 +43,11 @@ abstract class AbstractMatrix extends MathConstruct implements MatrixInterface
         }
     }
 
+    public function __invoke(int $i, int $j)
+    {
+        return $this->get($i, $j);
+    }
+
     protected function processMultiplyWithScalar(Number $number)
     {
         foreach ($this->entries as &$entry) {

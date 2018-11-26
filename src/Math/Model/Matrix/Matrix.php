@@ -127,15 +127,15 @@ class Matrix extends AbstractMatrix
     public function set(int $i, int $j, Number $number)
     {
         $this->checkDims($i, $j);
-        $this->entries[--$i*$this->dimN + --$j] = $number;
+        $this->entries[--$i*$this->dimN + --$j] = $number->value() ? $number : Zero::getInstance();
         return $this;
     }
 
     public function setRow(int $i, VectorInterface $vector)
     {
         $this->checkVectorDim($vector);
-        for ($j = 0; $j < $this->dimN; $j++) {
-            $this->set($i, $j+1, $vector->get($j+1));
+        foreach ($vector as $j => $number) {
+            $this->set($i, $j+1, $number);
         }
         return $this;
     }
@@ -143,8 +143,8 @@ class Matrix extends AbstractMatrix
     public function setCol(int $i, VectorInterface $vector)
     {
         $this->checkVectorDim($vector, false);
-        for ($j = 0; $j < $this->dimM; $j++) {
-            $this->set($j+1, $i, $vector->get($j+1));
+        foreach ($vector as $j => $number) {
+            $this->set($j+1, $i, $number);
         }
         return $this;
     }
@@ -152,8 +152,8 @@ class Matrix extends AbstractMatrix
     public function appendRow(VectorInterface $vector)
     {
         $this->checkVectorDim($vector);
-        for ($i = 0; $i < $this->dimN; $i++) {
-            $this->entries[] = $vector->get($i+1);
+        foreach ($vector as $number) {
+            $this->entries[] = $number;
         }
         $this->dimM++;
         return $this;
@@ -162,8 +162,8 @@ class Matrix extends AbstractMatrix
     public function appendCol(VectorInterface $vector)
     {
         $this->checkVectorDim($vector, false);
-        for ($i = 0; $i < $this->dimM; $i++) {
-            array_splice($this->entries, ($i+1) *( $this->dimN+1) - 1, 0, [$vector->get($i+1)]);
+        foreach ($vector as $i => $number) {
+            array_splice($this->entries, ($i+1) *( $this->dimN+1) - 1, 0, [$number]);
         }
         $this->dimN++;
         return $this;

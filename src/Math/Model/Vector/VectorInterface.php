@@ -16,9 +16,15 @@ use Math\Model\Number\Number;
  * @method \Math\Model\Vector\VectorInterface appendVector_(\Math\Model\Vector\VectorInterface $vector)
  * @method \Math\Model\Vector\VectorInterface normalise_()
  */
-interface VectorInterface extends MathInterface
+interface VectorInterface extends MathInterface, \Iterator
 {
     public function __toString();
+
+    /**
+     * @param int $i
+     * @return Number
+     */
+    public function __invoke(int $i);
 
     /**
      * @return ComparableNumber
@@ -74,4 +80,9 @@ interface VectorInterface extends MathInterface
      * @return VectorInterface
      */
     public function normalise();
+
+    /**
+     * @return Number
+     */
+    public function current();
 }

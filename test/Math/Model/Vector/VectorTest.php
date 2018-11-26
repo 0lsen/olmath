@@ -20,6 +20,16 @@ class VectorTest extends TestCase
         $this->assertEquals("[ 1.2 ; 0 ; -3.4 ]", (string) $vector);
     }
 
+    public function testInvoke()
+    {
+        $one = new RationalNumber(1);
+        $two = new RationalNumber(2);
+        $vector = new Vector($one, $two);
+
+        $this->assertSame($one, $vector(1));
+        $this->assertSame($two, $vector(2));
+    }
+
     public function testNorm()
     {
         $vector = new Vector(
@@ -142,5 +152,6 @@ class VectorTest extends TestCase
     //TODO: testSet()
     //TODO: testAppendNumber()
     //TODO: testAppendVector()
+    //TODO: testNormalise()
     //TODO: testDimensionExceptions()
 }

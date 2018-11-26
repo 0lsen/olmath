@@ -30,6 +30,13 @@ class MatrixTest extends TestCase
                             ."[ 4 |  -5 |       666 ]", (string) $this->matrix);
     }
 
+    public function testInvoke()
+    {
+        $matrix = $this->matrix;
+        $this->assertEquals(1, $matrix(1, 1)->value());
+        $this->assertEquals(4, $matrix(2, 1)->value());
+    }
+
     public function testTranspose()
     {
         $this->assertEquals(""

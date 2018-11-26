@@ -57,16 +57,10 @@ class SparseVector extends AbstractVector
     public function addVector(VectorInterface $vector)
     {
         $this->checkVectorDim($vector);
-        if ($vector instanceof SparseVector) {
-            foreach ($vector->getIndices() as $i) {
-                $this->set($i+1, $this->get($i+1)->add($vector->get($i+1)));
+        foreach ($vector as $i => $number) {
+            if ($number->value()) {
+                $this->set($i+1, $this->get($i+1)->add($number));
             }
-        } elseif ($vector instanceof Vector) {
-            for ($i = 0; $i < $vector->getDim(); $i++) {
-                $this->set($i+1, $this->get($i+1)->add($vector->get($i+1)));
-            }
-        } else {
-            throw new UnknownOperandException(get_class($vector));
         }
         return $this;
     }
