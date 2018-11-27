@@ -17,8 +17,14 @@ use Math\MathInterface;
  */
 interface Number extends MathInterface
 {
+    /**
+     * @return string
+     */
     public function __toString();
 
+    /**
+     * @return int|float|double|ComplexNumber
+     */
     public function value();
 
     /**

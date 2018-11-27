@@ -4,6 +4,7 @@ namespace Math\Model\Matrix\SparseInput;
 
 
 use Math\Model\Number\Number;
+use Math\Model\Number\NumberWrapper;
 
 class SingleElement
 {
@@ -11,7 +12,7 @@ class SingleElement
     private $row;
     /** @var int */
     private $col;
-    /** @var Number */
+    /** @var NumberWrapper */
     private $number;
 
     /**
@@ -24,7 +25,7 @@ class SingleElement
     {
         $this->row = $row-1;
         $this->col = $col-1;
-        $this->number = $number;
+        $this->number = new NumberWrapper($number);
     }
 
     /**
@@ -44,9 +45,9 @@ class SingleElement
     }
 
     /**
-     * @return Number
+     * @return NumberWrapper
      */
-    public function getNumber(): Number
+    public function getNumber(): NumberWrapper
     {
         return $this->number;
     }

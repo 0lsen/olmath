@@ -6,6 +6,7 @@ namespace Math\Model\Matrix;
 use Math\Exception\DimensionException;
 use Math\MathConstruct;
 use Math\Model\Number\Number;
+use Math\Model\Number\NumberWrapper;
 use Math\Model\Vector\VectorInterface;
 
 /**
@@ -33,7 +34,7 @@ abstract class AbstractMatrix extends MathConstruct implements MatrixInterface
     protected $dimN;
     /** @var int */
     protected $dimM;
-    /** @var Number[] */
+    /** @var NumberWrapper[] */
     protected $entries = [];
 
     public function __clone()
@@ -43,15 +44,10 @@ abstract class AbstractMatrix extends MathConstruct implements MatrixInterface
         }
     }
 
-    public function __invoke(int $i, int $j)
-    {
-        return $this->get($i, $j);
-    }
-
     protected function processMultiplyWithScalar(Number $number)
     {
         foreach ($this->entries as &$entry) {
-            $entry = $entry->multiplyWith($number);
+            $entry->multiplyWith($number);
         }
     }
 

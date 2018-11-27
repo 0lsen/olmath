@@ -4,6 +4,7 @@ namespace Math\Model\Vector;
 
 use Math\Exception\UnknownOperandException;
 use Math\Model\Number\Number;
+use Math\Model\Number\NumberWrapper;
 use Math\Model\Number\Zero;
 
 class Vector extends AbstractVector
@@ -11,7 +12,7 @@ class Vector extends AbstractVector
     public function __construct(Number ...$entries)
     {
         foreach ($entries as $entry) {
-            $this->entries[] = $entry;
+            $this->entries[] = new NumberWrapper($entry->value() ? $entry : Zero::getInstance());
         }
         $this->dim = sizeof($this->entries);
     }
@@ -29,7 +30,7 @@ class Vector extends AbstractVector
     public function multiplyWithScalar(Number $number)
     {
         if ($number instanceof Zero) {
-            $this->entries = array_fill(0, $this->dim, Zero::getInstance());
+            $this->entries = array_fill(0, $this->dim, new NumberWrapper(Zero::getInstance()));
         } else {
             parent::processMultiplyWithScalar($number);
         }
@@ -40,7 +41,7 @@ class Vector extends AbstractVector
     {
         $this->checkVectorDim($vector);
         foreach ($this->entries as $index => &$entry) {
-            $entry = $entry->add($vector->get_($index+1));
+            $entry->add($vector($index+1));
         }
         return $this;
     }

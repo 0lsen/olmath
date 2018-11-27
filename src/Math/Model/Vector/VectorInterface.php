@@ -5,6 +5,7 @@ namespace Math\Model\Vector;
 use Math\MathInterface;
 use Math\Model\Number\ComparableNumber;
 use Math\Model\Number\Number;
+use Math\Model\Number\NumberWrapper;
 
 /**
  * Interface VectorInterface
@@ -21,8 +22,11 @@ interface VectorInterface extends MathInterface, \Iterator
     public function __toString();
 
     /**
+     * Will return the NumberWrapper, suitable to safely manipulate the Vector component
+     * call get() to receive the actual Number
+     *
      * @param int $i
-     * @return Number
+     * @return NumberWrapper
      */
     public function __invoke(int $i);
 
@@ -49,8 +53,7 @@ interface VectorInterface extends MathInterface, \Iterator
     public function getDim();
 
     /**
-     * Do NOT use to change the value!
-     * Will not affect zero sparse elements and won't work when Number conversion occurs (like adding a Real to a Rational Number).
+     * Will return an actual Number, __invoke() will return the NumberWrapper suited to safely manipulate the Vector entry
      *
      * @param int $i
      * @return Number

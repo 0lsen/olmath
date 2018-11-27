@@ -5,6 +5,7 @@ namespace Math\Model\Vector;
 use Math\Exception\DimensionException;
 use Math\MathConstruct;
 use Math\Model\Number\Number;
+use Math\Model\Number\NumberWrapper;
 use Math\Model\Number\Zero;
 
 /**
@@ -21,7 +22,7 @@ abstract class AbstractVector extends MathConstruct implements VectorInterface
 {
     /** @var int */
     protected $dim;
-    /** @var Number[] */
+    /** @var NumberWrapper[] */
     protected $entries = [];
 
     public function __clone()
@@ -31,9 +32,15 @@ abstract class AbstractVector extends MathConstruct implements VectorInterface
         }
     }
 
+    /**
+     * @param int $i
+     * @return NumberWrapper
+     * @throws DimensionException
+     */
     public function __invoke(int $i)
     {
-        return $this->get($i);
+        $this->checkEntryDim($i-1);
+        return $this->entries[$i-1] ?? new NumberWrapper(Zero::getInstance());
     }
 
     public function getDim()
@@ -53,7 +60,7 @@ abstract class AbstractVector extends MathConstruct implements VectorInterface
     protected function processMultiplyWithScalar(Number $number)
     {
         foreach ($this->entries as &$entry) {
-            $entry = $entry->multiplyWith($number);
+            $entry->multiplyWith($number);
         }
     }
 
@@ -64,16 +71,21 @@ abstract class AbstractVector extends MathConstruct implements VectorInterface
         }
     }
 
+    /**
+     * @param int $i
+     * @return Number
+     * @throws DimensionException
+     */
     public function get(int $i)
     {
         $this->checkEntryDim($i-1);
-        return $this->entries[$i-1] ?? Zero::getInstance();
+        return isset($this->entries[$i-1]) ? $this->entries[$i-1]->get() : Zero::getInstance();
     }
 
     public function set(int $i, Number $number)
     {
         $this->checkEntryDim($i);
-        $this->entries[$i-1] = $number;
+        $this->entries[$i-1] = new NumberWrapper($number);
         return $this;
     }
 
@@ -88,7 +100,7 @@ abstract class AbstractVector extends MathConstruct implements VectorInterface
     {
         $norm = $this->norm();
         foreach ($this->entries as &$entry) {
-            $entry = $entry->divideBy($norm);
+            $entry->divideBy($norm);
         }
         return $this;
     }

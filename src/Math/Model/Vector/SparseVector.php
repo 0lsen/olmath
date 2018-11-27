@@ -6,6 +6,7 @@ namespace Math\Model\Vector;
 use Math\Exception\DimensionException;
 use Math\Exception\UnknownOperandException;
 use Math\Model\Number\Number;
+use Math\Model\Number\NumberWrapper;
 use Math\Model\Number\Zero;
 
 class SparseVector extends AbstractVector
@@ -17,7 +18,10 @@ class SparseVector extends AbstractVector
             throw new DimensionException('vector entry index ('.max(array_keys($entries)).') is out of range ('.$dim.').');
         }
         $this->dim = $dim;
-        $this->entries = $entries;
+        $this->entries = array_map(
+            function (Number $entry){return new NumberWrapper($entry->value() ? $entry : Zero::getInstance());},
+            $entries
+        );
     }
 
     public function __toString()
@@ -38,7 +42,7 @@ class SparseVector extends AbstractVector
     private function removeZeros()
     {
         foreach ($this->entries as $index => $entry) {
-            if ($entry instanceof Zero) {
+            if (!$entry->get()->value()) {
                 unset($this->entries[$index]);
             }
         }
@@ -76,7 +80,7 @@ class SparseVector extends AbstractVector
 
     public function appendNumber(Number $number)
     {
-        $this->entries[$this->dim++] = $number;
+        $this->entries[$this->dim++] = new NumberWrapper($number);
         return $this;
     }
 
@@ -84,11 +88,11 @@ class SparseVector extends AbstractVector
     {
         if ($vector instanceof SparseVector) {
             foreach ($vector->getIndices() as $index) {
-                $this->entries[$this->dim+$index] = $vector->get_($index+1);
+                $this->entries[$this->dim+$index] = clone $vector($index+1);
             }
         } elseif ($vector instanceof Vector) {
             for ($i = 0; $i < $vector->getDim(); $i++) {
-                $this->entries[$this->dim+$i] = $vector->get_($i);
+                $this->entries[$this->dim+$i] = clone $vector($i);
             }
         } else {
             throw new UnknownOperandException(get_class($vector));

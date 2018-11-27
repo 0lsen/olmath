@@ -3,6 +3,8 @@
 use Math\Model\Matrix\Matrix;
 use Math\Model\Matrix\MatrixInterface;
 use Math\Model\Number\ComplexNumber;
+use Math\Model\Number\Number;
+use Math\Model\Number\NumberWrapper;
 use Math\Model\Number\RationalNumber;
 use Math\Model\Number\RealNumber;
 use Math\Model\Number\Zero;
@@ -33,8 +35,19 @@ class MatrixTest extends TestCase
     public function testInvoke()
     {
         $matrix = $this->matrix;
+        $this->assertTrue($matrix(1, 1) instanceof NumberWrapper);
         $this->assertEquals(1, $matrix(1, 1)->value());
         $this->assertEquals(4, $matrix(2, 1)->value());
+
+        $one = new RationalNumber(1);
+
+        $added = $matrix(1,1)->add_($one);
+        $this->assertNotSame($added, $matrix(1,1)->get());
+        $this->assertEquals(2, $added->value());
+
+        $added = $matrix(1,1)->add($one);
+        $this->assertSame($added, $matrix(1,1)->get());
+        $this->assertEquals(2, $added->value());
     }
 
     public function testTranspose()
@@ -76,6 +89,14 @@ class MatrixTest extends TestCase
         $this->assertEquals(""
             ."[ 2 | 1/2 | 5 - 1/4 i ]\n"
             ."[ 8 |   0 |       672 ]", (string) $this->matrix->addMatrix_($matrix));
+    }
+
+    public function testGet()
+    {
+        $matrix = $this->matrix;
+        $this->assertTrue($matrix->get(1, 1) instanceof Number);
+        $this->assertEquals(1, $matrix->get(1, 1)->value());
+        $this->assertEquals(4, $matrix->get(2, 1)->value());
     }
 
     public function testGetRow()

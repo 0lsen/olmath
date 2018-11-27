@@ -24,10 +24,19 @@ class VectorTest extends TestCase
     {
         $one = new RationalNumber(1);
         $two = new RationalNumber(2);
-        $vector = new Vector($one, $two);
+        $vector = new Vector($one, $two, Zero::getInstance());
 
-        $this->assertSame($one, $vector(1));
-        $this->assertSame($two, $vector(2));
+        $this->assertSame($one, $vector(1)->get());
+        $this->assertSame($two, $vector(2)->get());
+        $this->assertSame(Zero::getInstance(), $vector(3)->get());
+
+        $added = $vector(1,1)->add_($one);
+        $this->assertNotSame($added, $vector(1,1)->get());
+        $this->assertEquals(2, $added->value());
+
+        $added = $vector(1,1)->add($one);
+        $this->assertSame($added, $vector(1,1)->get());
+        $this->assertEquals(2, $added->value());
     }
 
     public function testNorm()
@@ -145,6 +154,17 @@ class VectorTest extends TestCase
         $this->assertEquals(1.3, $vector1->get(3)->getR()->value());
         $this->assertEquals(-0.25, $vector1->get(3)->getI()->value());
         $this->assertEquals(1.3, $vector1->get(4)->value());
+    }
+
+    public function testGet()
+    {
+        $one = new RationalNumber(1);
+        $two = new RationalNumber(2);
+        $vector = new Vector($one, $two, Zero::getInstance());
+
+        $this->assertSame($one, $vector->get(1));
+        $this->assertSame($two, $vector->get(2));
+        $this->assertSame(Zero::getInstance(), $vector->get(3));
     }
 
     //TODO: testGetDim()

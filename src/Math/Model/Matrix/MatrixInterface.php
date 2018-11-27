@@ -3,6 +3,7 @@
 namespace Math\Model\Matrix;
 
 use Math\Model\Number\Number;
+use Math\Model\Number\NumberWrapper;
 use Math\Model\Vector\VectorInterface;
 
 /**
@@ -29,9 +30,12 @@ interface MatrixInterface extends \Math\MathInterface
     public function __toString();
 
     /**
+     * Will return the NumberWrapper, suitable to safely manipulate the Matrix entry
+     * call get() to receive the actual Number
+     *
      * @param int $i
      * @param int $j
-     * @return Number
+     * @return NumberWrapper
      */
     public function __invoke(int $i, int $j);
 
@@ -64,8 +68,7 @@ interface MatrixInterface extends \Math\MathInterface
     public function getDims();
 
     /**
-     * Do NOT use to change the value!
-     * Will not affect zero sparse elements and won't work when Number conversion occurs (like adding a Real to a Rational Number).
+     * Will return an actual Number, __invoke() will return the NumberWrapper suited to safely manipulate the Matrix entry
      *
      * @param int $i
      * @param int $j

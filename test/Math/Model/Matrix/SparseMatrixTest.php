@@ -4,6 +4,8 @@ use Math\Model\Matrix\MatrixInterface;
 use Math\Model\Matrix\SparseInput;
 use Math\Model\Matrix\SparseMatrix;
 use Math\Model\Number\ComplexNumber;
+use Math\Model\Number\Number;
+use Math\Model\Number\NumberWrapper;
 use Math\Model\Number\RationalNumber;
 use Math\Model\Number\Zero;
 use Math\Model\Vector\SparseVector;
@@ -44,8 +46,20 @@ class SparseMatrixTest extends TestCase
     public function testInvoke()
     {
         $matrix = $this->matrix;
+        $this->assertTrue($matrix(1, 1) instanceof NumberWrapper);
         $this->assertEquals(1, $matrix(1, 1)->value());
         $this->assertEquals(-5, $matrix(2, 1)->value());
+        $this->assertEquals(Zero::getInstance(), $matrix(3, 1)->get());
+
+        $one = new RationalNumber(1);
+
+        $added = $matrix(1,1)->add_($one);
+        $this->assertNotSame($added, $matrix(1,1)->get());
+        $this->assertEquals(2, $added->value());
+
+        $added = $matrix(1,1)->add($one);
+        $this->assertSame($added, $matrix(1,1)->get());
+        $this->assertEquals(2, $added->value());
     }
 
     public function testTranspose()
@@ -106,6 +120,15 @@ class SparseMatrixTest extends TestCase
             ."[          2,2:         4               ]\n"
             ."[          3,2:         6               ]\n"
             ."[                           10,5: 1 + i ]", (string) $this->matrix->addMatrix_($matrix));
+    }
+
+    public function testGet()
+    {
+        $matrix = $this->matrix;
+        $this->assertTrue($matrix->get(1, 1) instanceof Number);
+        $this->assertEquals( Zero::getInstance(), $matrix->get(3, 1));
+        $this->assertEquals(1, $matrix->get(1, 1)->value());
+        $this->assertEquals(-5, $matrix->get(2, 1)->value());
     }
 
     public function testGetRow()

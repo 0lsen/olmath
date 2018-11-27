@@ -29,9 +29,17 @@ class SparseVectorTest extends TestCase
             1 => $two,
         ]);
 
-        $this->assertSame($one, $vector(1));
-        $this->assertSame($two, $vector(2));
-        $this->assertSame(Zero::getInstance(), $vector(3));
+        $this->assertSame($one, $vector(1)->get());
+        $this->assertSame($two, $vector(2)->get());
+        $this->assertSame(Zero::getInstance(), $vector(3)->get());
+
+        $added = $vector(1,1)->add_($one);
+        $this->assertNotSame($added, $vector(1,1)->get());
+        $this->assertEquals(2, $added->value());
+
+        $added = $vector(1,1)->add($one);
+        $this->assertSame($added, $vector(1,1)->get());
+        $this->assertEquals(2, $added->value());
     }
 
     public function testNorm()
@@ -146,7 +154,6 @@ class SparseVectorTest extends TestCase
     }
 
     //TODO: testGetDim()
-    //TODO: testGet()
     //TODO: testSet()
     //TODO: testAppendNumber()
     //TODO: testAppendVector()

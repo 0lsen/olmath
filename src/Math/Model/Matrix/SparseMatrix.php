@@ -6,6 +6,7 @@ namespace Math\Model\Matrix;
 use Math\Exception\DimensionException;
 use Math\Model\Matrix\SparseInput\SingleElement;
 use Math\Model\Number\Number;
+use Math\Model\Number\NumberWrapper;
 use Math\Model\Number\Zero;
 use Math\Model\Vector\SparseVector;
 use Math\Model\Vector\Vector;
@@ -78,6 +79,13 @@ class SparseMatrix extends AbstractMatrix
         return $string;
     }
 
+    public function __invoke(int $i, int $j)
+    {
+        $this->checkDims($i, $j);
+        $entry = $this->getEntryIndex($i-1, $j-1);
+        return is_null($entry) ? new NumberWrapper(Zero::getInstance()) : $this->entries[$entry];
+    }
+
     public function transpose()
     {
         $dimM = $this->dimM;
@@ -111,7 +119,7 @@ class SparseMatrix extends AbstractMatrix
             $sum = Zero::getInstance();
             $rowElements = array_keys($transposed ? $this->colIndices : $this->rowIndices, $i);
             foreach ($rowElements as $j) {
-                $sum = $sum->add($vector->get($transposed ? $this->rowIndices[$j]+1 : $this->colIndices[$j]+1)->multiplyWith_($this->entries[$j]));
+                $sum = $sum->add($vector($transposed ? $this->rowIndices[$j]+1 : $this->colIndices[$j]+1)->multiplyWith_($this->entries[$j]->get()));
             }
             $result[] = $sum;
         }
@@ -124,7 +132,7 @@ class SparseMatrix extends AbstractMatrix
         $this->checkMatrixDims($matrix);
         for ($i = 1; $i <= $this->dimM; $i++) {
             for ($j = 1; $j <= $this->dimN; $j++) {
-                $toAdd = $matrix->get_($i, $j);
+                $toAdd = $matrix($i, $j);
                 if ($toAdd->value()) {
                     $current = $this->getEntryIndex($i-1, $j-1);
                     if (is_null($current)) {
@@ -132,7 +140,7 @@ class SparseMatrix extends AbstractMatrix
                         $this->colIndices[] = $j-1;
                         $this->entries[] = $toAdd;
                     } else {
-                        $this->entries[$current] = $this->entries[$current]->add($toAdd);
+                        $this->entries[$current]->add($toAdd);
                     }
                 }
             }
@@ -144,7 +152,7 @@ class SparseMatrix extends AbstractMatrix
     {
         $this->checkDims($i, $j);
         $entry = $this->getEntryIndex($i-1, $j-1);
-        return is_null($entry) ? Zero::getInstance() : $this->entries[$entry];
+        return is_null($entry) ? Zero::getInstance() : $this->entries[$entry]->get();
     }
 
     private function getEntryIndex(int $i, int $j)
@@ -160,7 +168,7 @@ class SparseMatrix extends AbstractMatrix
     {
         $entries = [];
         foreach (array_keys($this->rowIndices, $i-1) as $index) {
-            $entries[$this->colIndices[$index]] = $this->entries[$index];
+            $entries[$this->colIndices[$index]] = $this->entries[$index]->get();
         }
         return new SparseVector($this->dimM, $entries);
     }
@@ -169,7 +177,7 @@ class SparseMatrix extends AbstractMatrix
     {
         $entries = [];
         foreach (array_keys($this->colIndices, $i-1) as $index) {
-            $entries[$this->rowIndices[$index]] = $this->entries[$index];
+            $entries[$this->rowIndices[$index]] = $this->entries[$index]->get();
         }
         return new SparseVector($this->dimN, $entries);
     }
@@ -182,9 +190,9 @@ class SparseMatrix extends AbstractMatrix
             if (is_null($entry)) {
                 $this->rowIndices[] = $i;
                 $this->colIndices[] = $j;
-                $this->entries[] = $number;
+                $this->entries[] = new NumberWrapper($number);
             } else {
-                $this->entries[$entry] = $number;
+                $this->entries[$entry] = new NumberWrapper($number);
             }
         } else {
             $this->unset($i, $j);
@@ -230,7 +238,7 @@ class SparseMatrix extends AbstractMatrix
         $this->checkVectorDim($vector);
         foreach ($vector as $i => $number) {
             if ($number->value()) {
-                $this->entries[] = $number;
+                $this->entries[] = new NumberWrapper($number);
                 $this->rowIndices[] = $this->dimM;
                 $this->colIndices[] = $i;
             }
@@ -244,7 +252,7 @@ class SparseMatrix extends AbstractMatrix
         $this->checkVectorDim($vector, false);
         foreach ($vector as $i => $number) {
             if ($number->value()) {
-                $this->entries[] = $number;
+                $this->entries[] = new NumberWrapper($number);
                 $this->rowIndices[] = $i;
                 $this->colIndices[] = $this->dimN;
             }
@@ -259,6 +267,7 @@ class SparseMatrix extends AbstractMatrix
             throw new DimensionException('invalid row '.$i.' in ('.$this->dimM.','.$this->dimN.') matrix.');
         }
         $indices = array_keys($this->rowIndices, $i-1);
+        rsort($indices);
         foreach ($indices as $index) {
             $this->removeEntry($index);
         }
@@ -276,6 +285,7 @@ class SparseMatrix extends AbstractMatrix
             throw new DimensionException('invalid col '.$i.' in ('.$this->dimM.','.$this->dimN.') matrix.');
         }
         $indices = array_keys($this->colIndices, $i-1);
+        rsort($indices);
         foreach ($indices as $index) {
             $this->removeEntry($index);
         }

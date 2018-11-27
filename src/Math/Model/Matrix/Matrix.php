@@ -5,6 +5,7 @@ namespace Math\Model\Matrix;
 
 use Math\Exception\DimensionException;
 use Math\Model\Number\Number;
+use Math\Model\Number\NumberWrapper;
 use Math\Model\Number\Zero;
 use Math\Model\Vector\Vector;
 use Math\Model\Vector\VectorInterface;
@@ -21,7 +22,7 @@ class Matrix extends AbstractMatrix
                 throw new DimensionException('row dimensions do not match. '.$this->dimN.' expected, '.sizeof($row).' found.');
             }
             foreach ($row as $entry) {
-                $this->entries[] = $entry;
+                $this->entries[] = new NumberWrapper($entry->value() ? $entry : Zero::getInstance());
             }
         }
     }
@@ -49,6 +50,12 @@ class Matrix extends AbstractMatrix
             $string .= " ]";
         }
         return $string;
+    }
+
+    public function __invoke(int $i, int $j)
+    {
+        $this->checkDims($i, $j);
+        return $this->entries[--$i*$this->dimN + --$j];
     }
 
     public function transpose()
@@ -83,7 +90,7 @@ class Matrix extends AbstractMatrix
         for ($i = 0; $i < ($transposed ? $this->dimN : $this->dimM); $i++) {
             $sum = Zero::getInstance();
             for ($j = 0; $j < ($transposed ? $this->dimM : $this->dimN); $j++) {
-                $sum = $sum->add($vector->get($j+1)->multiplyWith_($this->entries[$transposed ? $j*$this->dimN + $i : $i*$this->dimN + $j]));
+                $sum = $sum->add($vector($j+1)->multiplyWith_($this->entries[$transposed ? $j*$this->dimN + $i : $i*$this->dimN + $j]->get()));
             }
             $result[] = $sum;
         }
@@ -95,7 +102,7 @@ class Matrix extends AbstractMatrix
     {
         $this->checkMatrixDims($matrix);
         foreach ($this->entries as $index => &$entry) {
-            $entry = $entry->add($matrix->get(floor($index/$this->dimN)+1, $index%$this->dimN+1));
+            $entry->add($matrix(floor($index/$this->dimN)+1, $index%$this->dimN+1));
         }
         return $this;
     }
@@ -103,7 +110,7 @@ class Matrix extends AbstractMatrix
     public function get(int $i, int $j)
     {
         $this->checkDims($i, $j);
-        return $this->entries[--$i*$this->dimN + --$j];
+        return $this->entries[--$i*$this->dimN + --$j]->get();
     }
 
     public function getRow(int $i)
