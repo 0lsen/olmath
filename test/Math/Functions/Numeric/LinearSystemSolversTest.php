@@ -1,6 +1,6 @@
 <?php
 
-use Math\Functions\Numeric\LinearSystemSolvers;
+use Math\Functions\Numeric\LeastSquaresSolvers;
 use Math\Model\Matrix\Matrix;
 use Math\Model\Matrix\SparseInput\SingleElement;
 use Math\Model\Matrix\SparseMatrix;
@@ -28,7 +28,7 @@ class LinearSystemSolversTest extends TestCase
             new RationalNumber(4)
         );
 
-        $x = LinearSystemSolvers::LSMR($A, $b);
+        $x = LeastSquaresSolvers::LSMR($A, $b);
 
         $this->assertEquals(6, $x->getDim());
         $this->assertEquals(1, $x->get(1)->value());
@@ -57,7 +57,7 @@ class LinearSystemSolversTest extends TestCase
         $x = new Vector(...$entries);
         $b = $A->multiplyWithVector($x);
 
-        $xCalc = LinearSystemSolvers::LSMR($A, $b);
+        $xCalc = LeastSquaresSolvers::LSMR($A, $b);
 
         for ($i = 0; $i < $n; $i++) {
             $this->assertEquals($x->get($i+1)->value(), $xCalc->get($i+1)->value());
@@ -83,7 +83,7 @@ class LinearSystemSolversTest extends TestCase
         $x = new Vector(...$entries);
         $b = $A->multiplyWithVector($x);
 
-        $xCalc = LinearSystemSolvers::LSMR($A, $b);
+        $xCalc = LeastSquaresSolvers::LSMR($A, $b);
 
         for ($i = 0; $i < $n; $i++) {
             $this->assertEquals($x->get($i+1)->value(), $xCalc->get($i+1)->value());
@@ -110,7 +110,7 @@ class LinearSystemSolversTest extends TestCase
             new RationalNumber(4)
         );
 
-        $x = LinearSystemSolvers::LSQR($A, $b);
+        $x = LeastSquaresSolvers::LSQR($A, $b);
 
         $this->assertEquals(4, $x->getDim());
         $this->assertEquals(1, $x->get(1)->value());
@@ -139,7 +139,7 @@ class LinearSystemSolversTest extends TestCase
         $x = new Vector(...$entries);
         $b = $A->multiplyWithVector($x);
 
-        $xCalc = LinearSystemSolvers::LSMR($A, $b);
+        $xCalc = LeastSquaresSolvers::LSMR($A, $b);
 
         for ($i = 0; $i < $n; $i++) {
             $this->assertEquals($x->get($i+1)->value(), $xCalc->get($i+1)->value());
@@ -165,7 +165,7 @@ class LinearSystemSolversTest extends TestCase
         $x = new Vector(...$entries);
         $b = $A->multiplyWithVector($x);
 
-        $xCalc = LinearSystemSolvers::LSMR($A, $b);
+        $xCalc = LeastSquaresSolvers::LSMR($A, $b);
 
         for ($i = 0; $i < $n; $i++) {
             $this->assertEquals($x->get($i+1)->value(), $xCalc->get($i+1)->value());

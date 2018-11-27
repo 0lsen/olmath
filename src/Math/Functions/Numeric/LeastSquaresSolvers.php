@@ -11,7 +11,7 @@ use Math\Model\Number\Zero;
 use Math\Model\Vector\SparseVector;
 use Math\Model\Vector\VectorInterface;
 
-class LinearSystemSolvers
+class LeastSquaresSolvers
 {
     /**
      * Least Squares Minimal Residual

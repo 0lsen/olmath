@@ -45,6 +45,9 @@ class NumberParserTest extends TestCase
         $string = '((-1))';
         $results = $this->parser->evaluateFulltext($string);
         $this->assertEquals(0, sizeof($results));
+
+        $result = $this->parser->evaluate($string);
+        $this->assertEquals('-1', (string) $result->getResult());
     }
 
     function testValidBrackets()
@@ -60,6 +63,10 @@ class NumberParserTest extends TestCase
         $string = '(2+4) / (6*(2+3))';
         $results = $this->parser->evaluateFulltext($string);
         $this->assertEquals('1/5', (string) $results[0]->getResult());
+
+        $string = '1 + -(i + 1 - 1)';
+        $results = $this->parser->evaluateFulltext($string);
+        $this->assertEquals('1 - i', (string) $results[0]->getResult());
     }
 
     function testInvalidBrackets()
