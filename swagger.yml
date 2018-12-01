@@ -1,0 +1,130 @@
+swagger: "2.0"
+info:
+  title: "PHPythagoras"
+  version: "0.0.2"
+host: "o1sen.noip.me"
+basePath: "/phpythagoras"
+consumes:
+- "application/json"
+schemes:
+- "https"
+produces:
+- "application/json"
+securityDefinitions:
+  token:
+    type: "apiKey"
+    name: "Authorization"
+    in: "header"
+security:
+- token: []
+paths:
+  /formula/evaluate:
+    post:
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "formula"
+        required: true
+        schema:
+          $ref: '#/definitions/FormulaRequestBody'
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: '#/definitions/FormulaResponseBody'
+        400:
+          description: "Bad Request"
+        401:
+          description: "Authentication Failed"
+        404:
+          description: "Not Found"
+definitions:
+  FormulaRequestBody:
+    type: "object"
+    required:
+    - "formula"
+    properties:
+      formula:
+        type: "string"
+      decimalPoint:
+        type: "string"
+      groupSeparator:
+        type: "string"
+  FormulaResponseBody:
+    type: "object"
+    properties:
+      ok:
+        type: "boolean"
+      error:
+        type: "string"
+      message:
+        type: "string"
+      result:
+        $ref: "#/definitions/NumberResult"
+      resultString:
+        type: "string"
+  NumberResult:
+    type: "object"
+    properties:
+      original:
+        type: "string"
+      result:
+        $ref: '#/definitions/Number'
+      dbz:
+        description: "did division by zero occur"
+        type: "boolean"
+  Number:
+    type: "object"
+    discriminator: "numberType"
+    required:
+    - numberType
+    properties:
+      numberType:
+        type: "string"
+  Zero:
+    allOf:
+    - $ref: '#/definitions/Number'
+    - type: "object"
+  RealNumber:
+    allOf:
+    - $ref: '#/definitions/Number'
+    - type: "object"
+      required:
+      - r
+      properties:
+        r:
+          type: "number"
+          description: "real value"
+  RationalNumber:
+    allOf:
+    - $ref: '#/definitions/Number'
+    - type: "object"
+      required:
+      - s
+      - n
+      - d
+      properties:
+        s:
+          type: "integer"
+          description: "sign: -1, 0 or 1"
+        n:
+          type: "integer"
+          description: "positive nominator"
+        d:
+          type: "integer"
+          description: "positive denominator"
+  ComplexNumber:
+    allOf:
+    - $ref: '#/definitions/Number'
+    - type: "object"
+      required:
+      - r
+      - i
+      properties:
+        r:
+          description: "real value"
+          $ref: '#/definitions/Number'
+        i:
+          description: "imaginary value"
+          $ref: '#/definitions/Number'

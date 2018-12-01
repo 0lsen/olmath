@@ -1,4 +1,4 @@
-# oL Math
+# PHPythagoras
 
 A tiny PHP toolkit to calculate stuff, with the ultimate goal of implementing a couple of numeric algorithms (CG, LSQR, LSMR, ...).
 
@@ -45,7 +45,7 @@ Essential to numeric stuff. So far sparse operations even seem quite elegant.
 )_
 - Do the calculations deemed necessary.
 _(
-As mentioned doing certain things should be avoided. So they aren't implemented in the first place.
+As mentioned, doing certain things should be avoided. So they aren't implemented in the first place.
 )_
 
 ###### Numeric Algorithms:
@@ -60,7 +60,8 @@ As mentioned doing certain things should be avoided. So they aren't implemented 
 
 ##### soon™
 
-- Matrix/vector operations that seem necessary at the moment _(e.g. vector subtraction)_
+- API / Swagger specification
+- More matrix/vector operations as needed
 - Parser for matrix/vector expressions.
 - Reasonable set of numeric algorithms
 
@@ -83,4 +84,4 @@ _(E.g. a matrix-vector-product's elements can be computed independently.)_
 - map matrix/vector external indices `1:n` to internal ones `0:n-1`, e.g. for effective/transparent sparse construction
 _( I want to avoid an array "key shift": do vector/matrix constructions even occur often? is a laborious "key shift" even costly? )_
 - maintain reasonable accuracy
-_( maintain/create rational numbers whenever reasonable, use relative accuracy instead of decimal accuracy, ... )_
+_( maintain/create rational numbers whenever reasonable, use relative accuracy instead of decimal accuracy, treat real numbers as rational when reasonable, ... )_
