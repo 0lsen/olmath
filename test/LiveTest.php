@@ -15,6 +15,6 @@ class LiveTest extends TestCase
         $request->setFormula('1+1');
 
         $response = $api->formulaEvaluatePost($request);
-        $this->assertEquals("2", $response->getResultString());
+        $this->assertEquals("1+1 = 2", $response->getResultString());
     }
 }
