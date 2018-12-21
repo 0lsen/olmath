@@ -1,6 +1,6 @@
 <?php
 /**
- * FormulaResponseBody
+ * FormulaResult
  *
  * PHP version 5
  *
@@ -33,14 +33,14 @@ use ArrayAccess;
 use Swagger\Client\ObjectSerializer;
 
 /**
- * FormulaResponseBody Class Doc Comment
+ * FormulaResult Class Doc Comment
  *
  * @category Class
  * @package  Swagger\Client
  * @author   Swagger Codegen team
  * @link     https://github.com/swagger-api/swagger-codegen
  */
-class FormulaResponseBody implements ModelInterface, ArrayAccess
+class FormulaResult implements ModelInterface, ArrayAccess
 {
     const DISCRIMINATOR = null;
 
@@ -49,7 +49,7 @@ class FormulaResponseBody implements ModelInterface, ArrayAccess
       *
       * @var string
       */
-    protected static $swaggerModelName = 'FormulaResponseBody';
+    protected static $swaggerModelName = 'FormulaResult';
 
     /**
       * Array of property to type mappings. Used for (de)serialization
@@ -57,11 +57,7 @@ class FormulaResponseBody implements ModelInterface, ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'ok' => 'bool',
-        'error' => 'string',
-        'message' => 'string',
-        'result' => '\Swagger\Client\Model\FormulaResult',
-        'result_string' => 'string'
+        'entries' => '\Swagger\Client\Model\FormulaResultEntry[]'
     ];
 
     /**
@@ -70,11 +66,7 @@ class FormulaResponseBody implements ModelInterface, ArrayAccess
       * @var string[]
       */
     protected static $swaggerFormats = [
-        'ok' => null,
-        'error' => null,
-        'message' => null,
-        'result' => null,
-        'result_string' => null
+        'entries' => null
     ];
 
     /**
@@ -104,11 +96,7 @@ class FormulaResponseBody implements ModelInterface, ArrayAccess
      * @var string[]
      */
     protected static $attributeMap = [
-        'ok' => 'ok',
-        'error' => 'error',
-        'message' => 'message',
-        'result' => 'result',
-        'result_string' => 'resultString'
+        'entries' => 'entries'
     ];
 
     /**
@@ -117,11 +105,7 @@ class FormulaResponseBody implements ModelInterface, ArrayAccess
      * @var string[]
      */
     protected static $setters = [
-        'ok' => 'setOk',
-        'error' => 'setError',
-        'message' => 'setMessage',
-        'result' => 'setResult',
-        'result_string' => 'setResultString'
+        'entries' => 'setEntries'
     ];
 
     /**
@@ -130,11 +114,7 @@ class FormulaResponseBody implements ModelInterface, ArrayAccess
      * @var string[]
      */
     protected static $getters = [
-        'ok' => 'getOk',
-        'error' => 'getError',
-        'message' => 'getMessage',
-        'result' => 'getResult',
-        'result_string' => 'getResultString'
+        'entries' => 'getEntries'
     ];
 
     /**
@@ -197,11 +177,7 @@ class FormulaResponseBody implements ModelInterface, ArrayAccess
      */
     public function __construct(array $data = null)
     {
-        $this->container['ok'] = isset($data['ok']) ? $data['ok'] : null;
-        $this->container['error'] = isset($data['error']) ? $data['error'] : null;
-        $this->container['message'] = isset($data['message']) ? $data['message'] : null;
-        $this->container['result'] = isset($data['result']) ? $data['result'] : null;
-        $this->container['result_string'] = isset($data['result_string']) ? $data['result_string'] : null;
+        $this->container['entries'] = isset($data['entries']) ? $data['entries'] : null;
     }
 
     /**
@@ -230,121 +206,25 @@ class FormulaResponseBody implements ModelInterface, ArrayAccess
 
 
     /**
-     * Gets ok
+     * Gets entries
      *
-     * @return bool
+     * @return \Swagger\Client\Model\FormulaResultEntry[]
      */
-    public function getOk()
+    public function getEntries()
     {
-        return $this->container['ok'];
+        return $this->container['entries'];
     }
 
     /**
-     * Sets ok
+     * Sets entries
      *
-     * @param bool $ok ok
+     * @param \Swagger\Client\Model\FormulaResultEntry[] $entries entries
      *
      * @return $this
      */
-    public function setOk($ok)
+    public function setEntries($entries)
     {
-        $this->container['ok'] = $ok;
-
-        return $this;
-    }
-
-    /**
-     * Gets error
-     *
-     * @return string
-     */
-    public function getError()
-    {
-        return $this->container['error'];
-    }
-
-    /**
-     * Sets error
-     *
-     * @param string $error error
-     *
-     * @return $this
-     */
-    public function setError($error)
-    {
-        $this->container['error'] = $error;
-
-        return $this;
-    }
-
-    /**
-     * Gets message
-     *
-     * @return string
-     */
-    public function getMessage()
-    {
-        return $this->container['message'];
-    }
-
-    /**
-     * Sets message
-     *
-     * @param string $message message
-     *
-     * @return $this
-     */
-    public function setMessage($message)
-    {
-        $this->container['message'] = $message;
-
-        return $this;
-    }
-
-    /**
-     * Gets result
-     *
-     * @return \Swagger\Client\Model\FormulaResult
-     */
-    public function getResult()
-    {
-        return $this->container['result'];
-    }
-
-    /**
-     * Sets result
-     *
-     * @param \Swagger\Client\Model\FormulaResult $result result
-     *
-     * @return $this
-     */
-    public function setResult($result)
-    {
-        $this->container['result'] = $result;
-
-        return $this;
-    }
-
-    /**
-     * Gets result_string
-     *
-     * @return string
-     */
-    public function getResultString()
-    {
-        return $this->container['result_string'];
-    }
-
-    /**
-     * Sets result_string
-     *
-     * @param string $result_string result_string
-     *
-     * @return $this
-     */
-    public function setResultString($result_string)
-    {
-        $this->container['result_string'] = $result_string;
+        $this->container['entries'] = $entries;
 
         return $this;
     }

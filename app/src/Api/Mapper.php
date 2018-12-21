@@ -8,16 +8,28 @@ use Math\Model\Number\Number;
 use Math\Model\Number\RationalNumber;
 use Math\Model\Number\RealNumber;
 use Math\Model\Number\Zero;
-use Math\Parser\NumberResult;
+use Math\Parser\FormulaResult;
 
 class Mapper
 {
-    public static function mapNumberResult(NumberResult $result)
+    /**
+     * @param FormulaResult $result
+     * @return \Swagger\Client\Model\FormulaResult
+     * @throws \Exception
+     */
+    public static function mapNumberResults(FormulaResult $result)
     {
-        $apiResult = new \Swagger\Client\Model\NumberResult();
-        $apiResult->setOriginal($result->getOriginal());
-        $apiResult->setDbz($result->isDbz());
-        $apiResult->setResult(self::mapNumberToApi($result->getResult()));
+        $apiResult = new \Swagger\Client\Model\FormulaResult();
+        $entries = [];
+        foreach ($result->getEntries() as $index => $entry) {
+            $apiEntry = new \Swagger\Client\Model\FormulaResultEntry();
+            $apiEntry->setOriginal($entry->getOriginal());
+            $apiEntry->setDbz($entry->isDbz());
+            $apiEntry->setVariable($entry->getVariable());
+            if (!$entry->isDbz()) $apiEntry->setResult(self::mapNumberToApi($entry->getResult()));
+            $entries[$index] = $apiEntry;
+        }
+        $apiResult->setEntries($entries);
 
         return $apiResult;
     }

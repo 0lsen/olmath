@@ -22,7 +22,7 @@ $app->post('/formula/evaluate', function(Request $request, Response $response, $
     /** @var \Swagger\Client\Model\FormulaRequestBody $requestBody */
     $requestBody = \Swagger\Client\ObjectSerializer::deserialize($body, "Swagger\Client\Model\FormulaRequestBody");
     if (!is_null($requestBody) && !empty($requestBody->getFormula())) {
-        $parser = new \Math\Parser\NumberParser(
+        $parser = new \Math\Parser\FormulaParser(
             $requestBody->getDecimalPoint() ? $requestBody->getDecimalPoint() : '.',
             $requestBody->getGroupSeparator() ? $requestBody->getGroupSeparator() : ','
         );
@@ -30,8 +30,8 @@ $app->post('/formula/evaluate', function(Request $request, Response $response, $
         try {
             $result = $parser->evaluate($requestBody->getFormula());
             $responseBody->setOk(true);
-            $responseBody->setResult(\Api\Mapper::mapNumberResult($result));
-            $responseBody->setResultString((string) $result->getResult());
+            $responseBody->setResult(\Api\Mapper::mapNumberResults($result));
+            $responseBody->setResultString((string) $result);
         } catch (\Throwable $t) {
             $responseBody->setOk(false);
             $responseBody->setError(get_class($t));

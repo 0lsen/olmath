@@ -61,10 +61,17 @@ definitions:
       message:
         type: "string"
       result:
-        $ref: "#/definitions/NumberResult"
+        $ref: "#/definitions/FormulaResult"
       resultString:
         type: "string"
-  NumberResult:
+  FormulaResult:
+    type: "object"
+    properties:
+      entries:
+        type: "array"
+        items:
+          $ref: '#/definitions/FormulaResultEntry'
+  FormulaResultEntry:
     type: "object"
     properties:
       original:
@@ -74,6 +81,8 @@ definitions:
       dbz:
         description: "did division by zero occur"
         type: "boolean"
+      variable:
+        type: "string"
   Number:
     type: "object"
     discriminator: "numberType"

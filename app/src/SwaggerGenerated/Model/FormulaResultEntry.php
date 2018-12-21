@@ -1,6 +1,6 @@
 <?php
 /**
- * NumberResult
+ * FormulaResultEntry
  *
  * PHP version 5
  *
@@ -33,14 +33,14 @@ use ArrayAccess;
 use Swagger\Client\ObjectSerializer;
 
 /**
- * NumberResult Class Doc Comment
+ * FormulaResultEntry Class Doc Comment
  *
  * @category Class
  * @package  Swagger\Client
  * @author   Swagger Codegen team
  * @link     https://github.com/swagger-api/swagger-codegen
  */
-class NumberResult implements ModelInterface, ArrayAccess
+class FormulaResultEntry implements ModelInterface, ArrayAccess
 {
     const DISCRIMINATOR = null;
 
@@ -49,7 +49,7 @@ class NumberResult implements ModelInterface, ArrayAccess
       *
       * @var string
       */
-    protected static $swaggerModelName = 'NumberResult';
+    protected static $swaggerModelName = 'FormulaResultEntry';
 
     /**
       * Array of property to type mappings. Used for (de)serialization
@@ -59,7 +59,8 @@ class NumberResult implements ModelInterface, ArrayAccess
     protected static $swaggerTypes = [
         'original' => 'string',
         'result' => '\Swagger\Client\Model\Number',
-        'dbz' => 'bool'
+        'dbz' => 'bool',
+        'variable' => 'string'
     ];
 
     /**
@@ -70,7 +71,8 @@ class NumberResult implements ModelInterface, ArrayAccess
     protected static $swaggerFormats = [
         'original' => null,
         'result' => null,
-        'dbz' => null
+        'dbz' => null,
+        'variable' => null
     ];
 
     /**
@@ -102,7 +104,8 @@ class NumberResult implements ModelInterface, ArrayAccess
     protected static $attributeMap = [
         'original' => 'original',
         'result' => 'result',
-        'dbz' => 'dbz'
+        'dbz' => 'dbz',
+        'variable' => 'variable'
     ];
 
     /**
@@ -113,7 +116,8 @@ class NumberResult implements ModelInterface, ArrayAccess
     protected static $setters = [
         'original' => 'setOriginal',
         'result' => 'setResult',
-        'dbz' => 'setDbz'
+        'dbz' => 'setDbz',
+        'variable' => 'setVariable'
     ];
 
     /**
@@ -124,7 +128,8 @@ class NumberResult implements ModelInterface, ArrayAccess
     protected static $getters = [
         'original' => 'getOriginal',
         'result' => 'getResult',
-        'dbz' => 'getDbz'
+        'dbz' => 'getDbz',
+        'variable' => 'getVariable'
     ];
 
     /**
@@ -190,6 +195,7 @@ class NumberResult implements ModelInterface, ArrayAccess
         $this->container['original'] = isset($data['original']) ? $data['original'] : null;
         $this->container['result'] = isset($data['result']) ? $data['result'] : null;
         $this->container['dbz'] = isset($data['dbz']) ? $data['dbz'] : null;
+        $this->container['variable'] = isset($data['variable']) ? $data['variable'] : null;
     }
 
     /**
@@ -285,6 +291,30 @@ class NumberResult implements ModelInterface, ArrayAccess
     public function setDbz($dbz)
     {
         $this->container['dbz'] = $dbz;
+
+        return $this;
+    }
+
+    /**
+     * Gets variable
+     *
+     * @return string
+     */
+    public function getVariable()
+    {
+        return $this->container['variable'];
+    }
+
+    /**
+     * Sets variable
+     *
+     * @param string $variable variable
+     *
+     * @return $this
+     */
+    public function setVariable($variable)
+    {
+        $this->container['variable'] = $variable;
 
         return $this;
     }
