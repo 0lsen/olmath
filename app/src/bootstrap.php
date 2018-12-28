@@ -45,6 +45,33 @@ $app->post('/formula/evaluate', function(Request $request, Response $response, $
     }
 });
 
+$app->post('/formula/evaluate_fulltext', function(Request $request, Response $response, $args) {
+    $body = json_decode(json_encode($request->getParsedBody()));
+    /** @var \Swagger\Client\Model\FormulaRequestBody $requestBody */
+    $requestBody = \Swagger\Client\ObjectSerializer::deserialize($body, "Swagger\Client\Model\FormulaRequestBody");
+    if (!is_null($requestBody) && !empty($requestBody->getFormula())) {
+        $parser = new \Math\Parser\FormulaParser(
+            $requestBody->getDecimalPoint() ? $requestBody->getDecimalPoint() : '.',
+            $requestBody->getGroupSeparator() ? $requestBody->getGroupSeparator() : ','
+        );
+        $responseBody = new \Swagger\Client\Model\FormulaResponseBody();
+        try {
+            $result = $parser->evaluateFulltext($requestBody->getFormula());
+            $responseBody->setOk(true);
+            $responseBody->setResult(\Api\Mapper::mapNumberResults($result));
+            $responseBody->setResultString((string) $result);
+        } catch (\Throwable $t) {
+            $responseBody->setOk(false);
+            $responseBody->setError(get_class($t));
+            $responseBody->setMessage($t->getMessage());
+        }
+        $responseObject = \Swagger\Client\ObjectSerializer::sanitizeForSerialization($responseBody);
+        return $response->withJson($responseObject);
+    } else {
+        return $response->withStatus(400);
+    }
+});
+
 $app
     ->add(new TokenAuthentication([
         'path' => '/',

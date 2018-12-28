@@ -39,6 +39,27 @@ paths:
           description: "Authentication Failed"
         404:
           description: "Not Found"
+  /formula/evaluate_fulltext:
+    post:
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "formula"
+        required: true
+        schema:
+          $ref: '#/definitions/FormulaRequestBody'
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: '#/definitions/FormulaResponseBody'
+        400:
+          description: "Bad Request"
+        401:
+          description: "Authentication Failed"
+        404:
+          description: "Not Found"
 definitions:
   FormulaRequestBody:
     type: "object"
