@@ -31,6 +31,12 @@ interface VectorInterface extends MathInterface, \Iterator
     public function __invoke(int $i);
 
     /**
+     * @param VectorInterface $vector
+     * @return bool
+     */
+    public function equals(VectorInterface $vector);
+
+    /**
      * @return ComparableNumber
      */
     public function norm();

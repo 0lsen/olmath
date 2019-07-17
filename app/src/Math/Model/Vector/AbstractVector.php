@@ -43,6 +43,15 @@ abstract class AbstractVector extends MathConstruct implements VectorInterface
         return $this->entries[$i-1] ?? new NumberWrapper(Zero::getInstance());
     }
 
+    public function equals(VectorInterface $vector)
+    {
+        if ($this->dim != $vector->getDim()) return false;
+        for ($i = 0; $i < $this->dim; $i++) {
+            if ($this($i)->value() != $vector($i)->value()) return false;
+        }
+        return true;
+    }
+
     public function getDim()
     {
         return $this->dim;
