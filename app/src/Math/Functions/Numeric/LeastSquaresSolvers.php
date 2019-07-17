@@ -7,6 +7,7 @@ use Math\Exception\DimensionException;
 use Math\Model\Matrix\MatrixInterface;
 use Math\Model\Number\ComparableNumber;
 use Math\Model\Number\RationalNumber;
+use Math\Model\Number\RealNumber;
 use Math\Model\Number\Zero;
 use Math\Model\Vector\SparseVector;
 use Math\Model\Vector\VectorInterface;
@@ -42,6 +43,9 @@ class LeastSquaresSolvers
         if ($m != $b->getDim()) {
             throw new DimensionException('matrix ('.$m.','.$n.') does not match vector of size '.$b->getDim());
         }
+        if ($m == $b->getDim() && $n >= $m && $b->equals($A->multiplyWithVector((clone $b)->appendVector(new SparseVector($n-$m))))) {
+            return $b->appendVector(new SparseVector($n-$m));
+        }
 
         if (is_null($maxIt)) $maxIt = 100;
         if (is_null($atol)) $atol = new RationalNumber(1, 100000000, 1);
@@ -62,7 +66,7 @@ class LeastSquaresSolvers
 
         $tau = clone $alpha;
         $rhoOld = new RationalNumber(1);
-        $rhoOldBar = new RationalNumber(1);
+        $rhoBarOld = new RationalNumber(1);
         $zetaBar = $alpha->multiplyWith_($beta);
 
         $cBar = new RationalNumber(1);
@@ -80,7 +84,7 @@ class LeastSquaresSolvers
         $aNormSquared = $alpha->normSquared();
 
         if ($beta->value() == 0) {
-            return new SparseVector($n);
+            return $x;
         }
 
         while (++$it <= $maxIt) {
@@ -118,7 +122,7 @@ class LeastSquaresSolvers
             $zeta = $cBar->multiplyWith_($zetaBar);
             $zetaBar = $zetaBar->multiplyWith($sBar);
 
-            $hBar = $h->addVector_($hBar->multiplyWithScalar($thetaBar->multiplyWith_($rho)->negative()->divideBy($rhoOld->multiplyWith_($rhoOldBar))));
+            $hBar = $h->addVector_($hBar->multiplyWithScalar($thetaBar->multiplyWith_($rho)->negative()->divideBy($rhoOld->multiplyWith_($rhoBarOld))));
             $x = $x->addVector($hBar->multiplyWithScalar_($zeta->divideBy_($rho->multiplyWith_($rhoBar))));
             $h = $v->addVector_($h->multiplyWithScalar_($theta->negative_()->divideBy($rho)));
 
@@ -160,7 +164,7 @@ class LeastSquaresSolvers
             $aNormSquared = $aNormSquared->add($alpha->normSquared());
 
             $rhoOld = $rho;
-            $rhoOldBar = $rhoBar;
+            $rhoBarOld = $rhoBar;
             $zetaOld = $zeta;
             $thetaTildeOld = $thetaTilde;
 
@@ -203,6 +207,9 @@ class LeastSquaresSolvers
         list($m,$n) = $A->getDims();
         if ($m != $b->getDim()) {
             throw new DimensionException('matrix ('.$m.','.$n.') does not match vector of size '.$b->getDim());
+        }
+        if ($m == $b->getDim() && $n >= $m && $b->equals($A->multiplyWithVector((clone $b)->appendVector(new SparseVector($n-$m))))) {
+            return $b->appendVector(new SparseVector($n-$m));
         }
 
         if (is_null($maxIt)) $maxIt = 100;
@@ -287,7 +294,7 @@ class LeastSquaresSolvers
 
             if (
                 $r < $btol->multiplyWith_($bNorm)->add($atol->multiplyWith_($aNorm)->multiplyWith($xNorm))->value()
-                || $aTr < $atol->multiplyWith_($aNorm)->multiplyWith($r)->value()
+                || $aTr < $atol->multiplyWith_($aNorm)->multiplyWith(new RealNumber($r))->value()
             ) {
                 break;
             }
