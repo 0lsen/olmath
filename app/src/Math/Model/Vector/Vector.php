@@ -49,7 +49,7 @@ class Vector extends AbstractVector
     public function appendNumber(Number $number)
     {
         $this->dim++;
-        $this->entries[] = $number;
+        $this->entries[] = new NumberWrapper($number);
         return $this;
     }
 
@@ -64,7 +64,7 @@ class Vector extends AbstractVector
             for ($i = 0; $i < $vector->getDim(); $i++) {
                 $this->entries[] = in_array($i, $indices)
                     ? $vector->get_($i+1)
-                    : Zero::getInstance();
+                    : new NumberWrapper(Zero::getInstance());
             }
         } else {
             throw new UnknownOperandException(get_class($vector));
