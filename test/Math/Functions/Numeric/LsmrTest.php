@@ -1,6 +1,7 @@
 <?php
 
-use Math\Functions\Numeric\LeastSquaresSolvers;
+use Math\Functions\Numeric\LeastSquaresSolver;
+use Math\Functions\Numeric\LsmrSolver;
 use Math\Model\Matrix\Matrix;
 use Math\Model\Matrix\SparseInput\SingleElement;
 use Math\Model\Matrix\SparseMatrix;
@@ -10,10 +11,21 @@ use PHPUnit\Framework\TestCase;
 
 class LsmrTest extends TestCase
 {
+    /**
+     * @var LeastSquaresSolver
+     */
+    private $solver;
+
     private $min = -5;
     private $max = 5;
     private $m = 10;
     private $n = 5;
+
+    public function setUp()
+    {
+        $this->solver = new LsmrSolver();
+        parent::setUp();
+    }
 
     public function testTrivialIdentityMatrix()
     {
@@ -27,7 +39,7 @@ class LsmrTest extends TestCase
             new RationalNumber(2)
         );
 
-        $x = LeastSquaresSolvers::LSMR($A, $b);
+        $x = $this->solver->solve($A, $b);
 
         $this->assertEquals(2, $x->getDim());
         $this->assertEquals(1, $x->get(1)->value());
@@ -50,7 +62,7 @@ class LsmrTest extends TestCase
             new RationalNumber(4)
         );
 
-        $x = LeastSquaresSolvers::LSMR($A, $b);
+        $x = $this->solver->solve($A, $b);
 
         $this->assertEquals(6, $x->getDim());
         $this->assertEquals(1, $x->get(1)->value());
@@ -79,7 +91,7 @@ class LsmrTest extends TestCase
         $x = new Vector(...$entries);
         $b = $A->multiplyWithVector($x);
 
-        $xCalc = LeastSquaresSolvers::LSMR($A, $b);
+        $xCalc = $this->solver->solve($A, $b);
 
         for ($i = 0; $i < $this->n; $i++) {
             $this->assertEquals($x->get($i + 1)->value(), $xCalc->get($i + 1)->value());
@@ -106,7 +118,7 @@ class LsmrTest extends TestCase
         $x = new Vector(...$entries);
         $b = $A->multiplyWithVector($x);
 
-        $xCalc = LeastSquaresSolvers::LSMR($A, $b);
+        $xCalc = $this->solver->solve($A, $b);
 
         for ($i = 0; $i < $this->n; $i++) {
             $this->assertEquals($x->get($i + 1)->value(), $xCalc->get($i + 1)->value());
