@@ -43,14 +43,16 @@ class FormulaParser
     public function __construct(string $decimalPoint = '.' , string $groupSeparator = ',')
     {
         if (!self::$initialised) {
-            self::init();
+            self::init($decimalPoint, $groupSeparator);
         }
-        $this->replacements['#'.preg_quote($decimalPoint, '#').'#'] = '.';
         $this->replacements['#'.preg_quote($groupSeparator, '#').'#'] = '';
+        $this->replacements['#'.preg_quote($decimalPoint, '#').'#'] = '.';
     }
 
-    private static function init()
+    private static function init(string $decimalPoint, string $groupSeparator)
     {
+        if (!is_null($decimalPoint)) FormulaResultEntry::setDecimalPoint($decimalPoint);
+        if (!is_null($groupSeparator)) FormulaResultEntry::setGroupSeparator($groupSeparator);
         self::$regexNumber = '(?<=^|[()'.preg_quote(self::$binaryOperators, '#').'])(-?(?:(?:[0-9]+)?\.)?(?:[0-9]+)|i)';
         self::$regexFormula = '^({\w+})(['. preg_quote(self::$binaryOperators, '#') .']({\w+}))*$';
         self::$validSymbols = '\(\)0-9i\.' . self::$binaryOperators . self::$unaryOperators;
@@ -146,7 +148,7 @@ class FormulaParser
             $entry->setVariable($variable);
             $this->numbers[$variable] = clone $this->getNumber($match);
         }
-        $result->addResult($entry, $variable ? $variable : null);
+        $result->addResult($entry);
     }
 
     private function reset()

@@ -40,6 +40,17 @@ class FormulaParserTest extends TestCase
         $this->assertTrue($result->getEntries()[0]->isDbz());
     }
 
+    function testSeparators() {
+        $reflection = new \ReflectionProperty('Math\Parser\FormulaParser', 'initialised');
+        $reflection->setAccessible(true);
+        $reflection->setValue(null, false);
+        $parser = new FormulaParser(',', '.');
+        $string = '10.000,1 * 10000,2';
+        $result = $parser->evaluate($string);
+
+        $this->assertEquals('10.000,1 * 10000,2 = 100.003.000,02', (string) $result->getEntries()[0]);
+    }
+
     function testTrivialInput()
     {
         $string = 'foo ((-1)) bar';
