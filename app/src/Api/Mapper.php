@@ -21,13 +21,13 @@ class Mapper
     {
         $apiResult = new \Swagger\Client\Model\FormulaResult();
         $entries = [];
-        foreach ($result->getEntries() as $index => $entry) {
+        foreach ($result->getEntries() as $entry) {
             $apiEntry = new \Swagger\Client\Model\FormulaResultEntry();
             $apiEntry->setOriginal($entry->getOriginal());
             $apiEntry->setDbz($entry->isDbz());
             $apiEntry->setVariable($entry->getVariable());
             if (!$entry->isDbz()) $apiEntry->setResult(self::mapNumberToApi($entry->getResult()));
-            $entries[$index] = $apiEntry;
+            $entries[] = $apiEntry;
         }
         $apiResult->setEntries($entries);
 
