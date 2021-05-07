@@ -24,10 +24,11 @@ class FormulaParser
     private static $regexLine;
 
     private $replacements = [
-        '#[\t ]+#' => '',
+        '#\s+#' => '',
         '#(\d)i#' => '$1*i',
         '#(\w)\(#' => '$1*(',
         '#\)(\w)#' => ')*$1',
+        '#\)\(#' => ')*($1)',
     ];
 
     /** @var Number[] */
